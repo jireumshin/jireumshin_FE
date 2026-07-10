@@ -39,8 +39,8 @@ export default function Layout({
   const currentOpacity = showLoadingOverlay ? 1 : overlayOpacity;
 
   return (
-    <div className="flex min-h-svh justify-center">
-      <div className="relative flex min-h-svh w-full max-w-117 flex-col overflow-hidden border-x-[2.5px] border-jj-ink bg-jj-app">
+    <div className="flex h-svh justify-center">
+      <div className="relative flex h-svh w-full max-w-117 flex-col overflow-hidden border-x-[2.5px] border-jj-ink bg-jj-app">
         {showHeader && (
           <div className="shrink-0">
             <Header {...headerProps} />
