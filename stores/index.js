@@ -2,13 +2,9 @@
 
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
-import { combineReducers } from "@reduxjs/toolkit";
-import exampleReducer from "./exampleSlice";
 
-const rootReducer = combineReducers({
-  example: exampleReducer,
-  // 여기에 다른 reducer들을 추가
-});
+// 슬라이스가 생기면 여기서 등록 (예: combineReducers({ auth, trial }))
+const rootReducer = (state = {}) => state;
 
 export const store = configureStore({
   reducer: rootReducer,
@@ -20,12 +16,8 @@ export const store = configureStore({
     }),
 });
 
-// Selectors
-export const selectors = {
-  getExampleData: (state) => state.example.data,
-  getExampleLoading: (state) => state.example.loading,
-  getExampleError: (state) => state.example.error,
-};
+// Selector 모음 — 슬라이스 추가 시 여기에 정의
+export const selectors = {};
 
 export function ReduxProvider({ children }) {
   return <Provider store={store}>{children}</Provider>;

@@ -1,21 +1,11 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/stores";
 import { Toaster } from "sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata = {
-  title: "jireumnshin_FE",
-  description: "jireumnshin_FE",
+  title: "지름신 재판소",
+  description:
+    "충동구매를 재판에 회부하고, AI 배심원들과 싸워 판결을 받아내는 서비스",
 };
 
 export const viewport = {
@@ -30,9 +20,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ko">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className="antialiased">
         <ReduxProvider>
           {children}
           <Toaster position="top-center" />

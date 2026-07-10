@@ -97,9 +97,27 @@ export const createData = createAsyncThunk(
 - `cn()` 함수로 조건부 클래스 병합
 
 ### 레이아웃(모바일 전용)
-- 화면 셸은 `components/common/Layout.jsx` 사용 — 데스크탑에서도 중앙 모바일 프레임으로 렌더링
-- 기본 `maxWidth`는 `430px` (모바일 전용, 태블릿/데스크탑으로 넓어지지 않음)
-- 옵션값: `'full' | '390px' | '430px' | '480px'`
+- 화면 셸은 `components/common/Layout.jsx` 사용 — 데스크탑에서도 **468px 중앙 프레임**으로 렌더링
+- 도트 배경은 `body`(globals.css), Layout은 좌우 잉크 보더 프레임 담당
+- props: `showHeader`, `headerProps`, `showBottomNavigation`, `bottomNavigation`, `allowScroll`, `noScroll`, `isLoading`
+- 헤더는 `components/common/Header.jsx` (옐로우 바 + 판결봉). `subtitle`, `right` 슬롯 지원
+
+### 디자인 시스템 (지름신 재판소)
+> **단일 소스: `docs/designsystem.md`** — 색·폰트·컴포넌트 규칙이 바뀌면 코드와 함께 그 문서를 업데이트. 아래는 요약.
+
+컨셉: **네오브루탈리즘 팝 법정** — 두꺼운 잉크 보더 + 하드 오프셋 그림자(블러 없음).
+
+- **shadcn/ui를 기본으로 쓰되, 서비스 톤으로 래핑**해서 사용 (예: `components/common/BrutalButton.jsx`).
+  shadcn 컴포넌트는 내부 `cn()` 병합이라 className으로 브랜드 스타일을 덮어쓸 수 있음.
+- **브랜드 색 토큰** (globals.css `@theme`, `bg-jj-*`/`text-jj-*`/`border-jj-*`로 사용):
+  - `jj-red` 검사·유죄·사지마 / `jj-green` 변호·무죄·사도됨 / `jj-violet` 중립(팩트봇)·포인트
+  - `jj-yellow` 브랜드·헤더·강조 / `jj-ink` 잉크(텍스트·보더) / `jj-app` 앱배경 / `jj-paper` 카드
+  - shadcn 시맨틱 변수(`--primary` 등)도 이 팔레트로 리컬러됨 → 기본 컴포넌트도 자동 온브랜드
+- **그림자**: `shadow-hard`(4px) / `shadow-hard-sm`(3px). **보더**: `border-[2.5px] border-jj-ink`.
+- **폰트**: `font-display`(Black Han Sans·제목) / 기본 본문 Gothic A1 / `font-round`(Jua·캡션). globals.css에서 Google Fonts로 로드.
+- **눌림 인터랙션**: 버튼 `active:translate-x-1 active:translate-y-1 active:shadow-none`.
+- ⚠️ Tailwind는 **완전한 클래스 문자열만 스캔**함 — `bg-${x}` 동적 조합 금지, 전체 문자열(`bg-jj-red`)로 작성.
+- UI 레퍼런스: `docs/ui_example/*.html` (화면별 목업).
 
 ### 인증 및 라우트 보호
 - 인증이 필요한 페이지는 `useAuth()` 훅의 `requireAuth()` 사용
@@ -114,10 +132,9 @@ export const createData = createAsyncThunk(
   - `ui/`: shadcn/ui 컴포넌트
   - `widgets/`: 복합 위젯 컴포넌트
 - 각 기능 폴더 내부에 `hooks/` 폴더로 관련 훅 분리 가능
-- **이미지 및 정적 자산 파일**: `assets/` 폴더에 저장
-  - 이미지 파일은 우선적으로 `.svg` 확장자 사용 (`.png`, `.jpg` 등은 필요한 경우에만 사용)
-  - SVG 파일은 `import` 문으로 직접 import하여 사용
-  - Next.js Image 컴포넌트와 함께 사용 가능
+- **이미지 및 정적 자산 파일**: `public/assets/` 폴더에 **PNG**로 관리
+  - `/assets/파일명.png` 경로로 참조 (예: `<img src="/assets/logo.png" />`)
+  - SVG는 저장소에 두지 않음 (불필요한 리소스 지양). 로고 등은 PNG 단일 버전만 유지
 - **아이콘**: 통일성을 위해 `lucide-react` 라이브러리의 아이콘 사용
   - 다른 아이콘 라이브러리나 커스텀 SVG 아이콘 사용 금지
   - `import { IconName } from 'lucide-react'` 형태로 import하여 사용

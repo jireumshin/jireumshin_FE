@@ -1,27 +1,14 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-
-export default function Header() {
-  const router = useRouter()
-
-  const handleNavigate = (path) => {
-    router.push(path)
-  }
-
+export default function Header({ subtitle = '새 사건 접수', right = null }) {
   return (
-    <div 
-      className="bg-blue-600 text-white px-8 py-4 flex flex-row items-center justify-start gap-4"
-      style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}
-    >
-      <Button
-        variant="link" 
-        className="text-white hover:underline p-0 h-auto"
-        onClick={() => handleNavigate('/page1')}
-      >
-        페이지1
-      </Button>
-    </div>
+    <header className="flex items-center gap-2.5 border-b-[2.5px] border-jj-ink bg-jj-yellow px-4 py-3">
+      <img src="/assets/logo.png" alt="지름신 재판소" className="h-10 w-10 flex-none" />
+      <span className="block leading-none">
+        <b className="block font-display text-xl leading-none">지름신 재판소</b>
+        <span className="text-[11px] font-extrabold text-[#7a6a00]">{subtitle}</span>
+      </span>
+      {right && <span className="ml-auto flex-none">{right}</span>}
+    </header>
   )
 }

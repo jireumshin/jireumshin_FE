@@ -1,51 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;500;700;800;900&family=Jua&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 3.9%;
-  --primary: 0 0% 9%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 0 0% 96.1%;
-  --secondary-foreground: 0 0% 9%;
-  --muted: 0 0% 96.1%;
-  --muted-foreground: 0 0% 45.1%;
-  --accent: 0 0% 96.1%;
-  --accent-foreground: 0 0% 9%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 89.8%;
-  --input: 0 0% 89.8%;
-  --ring: 0 0% 3.9%;
-  --radius: 0.5rem;
-}
+  /* ── 지름신 재판소 디자인 토큰 ── */
+  --jj-bg: #DED6FF;          /* 바깥 배경(도트 패턴) */
+  --jj-app: #F3F1FB;         /* 앱 프레임 배경 */
+  --jj-ink: #16121D;         /* 잉크 — 텍스트·보더 */
+  --jj-paper: #FFFFFF;
+  --jj-red: #FF5B5B;         --jj-red-soft: #FFE1E1;    /* 검사 · 유죄 · 사지마 */
+  --jj-green: #12C08A;       --jj-green-soft: #D2F6EA;  /* 변호 · 무죄 · 사도됨 */
+  --jj-violet: #8B6CFF;      --jj-violet-soft: #ECE4FF; /* 중립(팩트봇) · 포인트 */
+  --jj-yellow: #FFD23D;      /* 브랜드 · 헤더 · 강조 */
+  --jj-muted: #7A6BA8;       /* 보조 텍스트 */
 
-.dark {
-  --background: 0 0% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 0 0% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 0 0% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 0 0% 9%;
-  --secondary: 0 0% 14.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 14.9%;
-  --muted-foreground: 0 0% 63.9%;
-  --accent: 0 0% 14.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 14.9%;
-  --input: 0 0% 14.9%;
-  --ring: 0 0% 83.1%;
+  /* 폰트 */
+  --font-display: "Black Han Sans", sans-serif; /* 제목 */
+  --font-sans: "Gothic A1", sans-serif;         /* 본문 */
+  --font-round: "Jua", sans-serif;              /* 캡션·라운드 */
+
+  /* ── shadcn 시맨틱 변수 — 브랜드 팔레트로 리컬러 (HSL) ── */
+  --background: 252 55% 96%;          /* app */
+  --foreground: 262 23% 9%;           /* ink */
+  --card: 0 0% 100%;
+  --card-foreground: 262 23% 9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 262 23% 9%;
+  --primary: 262 23% 9%;              /* ink 버튼 */
+  --primary-foreground: 46 100% 62%;  /* yellow 텍스트 */
+  --secondary: 258 100% 95%;          /* violet-soft */
+  --secondary-foreground: 262 23% 9%;
+  --muted: 252 55% 96%;
+  --muted-foreground: 255 26% 54%;
+  --accent: 258 100% 95%;
+  --accent-foreground: 262 23% 9%;
+  --destructive: 0 100% 68%;          /* red */
+  --destructive-foreground: 0 0% 100%;
+  --border: 262 23% 9%;               /* ink 보더 */
+  --input: 262 23% 9%;
+  --ring: 253 100% 71%;               /* violet 포커스 */
+  --radius: 0.75rem;
 }
 
 @theme inline {
+  /* shadcn 시맨틱 색 */
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
@@ -65,8 +62,29 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* 지름신 브랜드 색 — bg-jj-red / text-jj-ink / border-jj-yellow 등으로 사용 */
+  --color-jj-bg: var(--jj-bg);
+  --color-jj-app: var(--jj-app);
+  --color-jj-ink: var(--jj-ink);
+  --color-jj-paper: var(--jj-paper);
+  --color-jj-red: var(--jj-red);
+  --color-jj-red-soft: var(--jj-red-soft);
+  --color-jj-green: var(--jj-green);
+  --color-jj-green-soft: var(--jj-green-soft);
+  --color-jj-violet: var(--jj-violet);
+  --color-jj-violet-soft: var(--jj-violet-soft);
+  --color-jj-yellow: var(--jj-yellow);
+  --color-jj-muted: var(--jj-muted);
+
+  /* 하드 오프셋 그림자 — shadow-hard / shadow-hard-sm */
+  --shadow-hard: 4px 4px 0 var(--jj-ink);
+  --shadow-hard-sm: 3px 3px 0 var(--jj-ink);
+
+  /* 폰트 유틸 — font-display / font-sans / font-round */
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-round: var(--font-round);
 }
 
 * {
@@ -74,11 +92,13 @@
 }
 
 body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  /* 모바일 최적화 */
-  height: 100svh;
+  color: var(--jj-ink);
+  font-family: var(--font-sans);
+  /* 바깥 배경: 연보라 + 도트 패턴 */
+  background-color: var(--jj-bg);
+  background-image: radial-gradient(var(--jj-violet) 0.8px, transparent 0.8px);
+  background-size: 22px 22px;
+  min-height: 100svh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -88,7 +108,6 @@ body {
 ::-webkit-scrollbar {
   display: none;
 }
-
 * {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -103,4 +122,43 @@ img {
 /* 모바일 줌 방지 */
 * {
   touch-action: manipulation;
+}
+
+/* ── 로딩: 판결봉 내리치기 ── */
+.jj-gavel {
+  transform-origin: 22% 82%;
+  animation: jj-bang 1.2s cubic-bezier(0.5, 0, 0.6, 1) infinite;
+}
+.jj-shake {
+  animation: jj-shake 1.2s ease-in-out infinite;
+}
+.jj-dots::after {
+  content: "";
+  animation: jj-dots 3.6s steps(1, end) infinite;
+}
+
+@keyframes jj-bang {
+  0% { transform: rotate(-48deg); }
+  38% { transform: rotate(-48deg); }
+  52% { transform: rotate(14deg); }
+  60% { transform: rotate(2deg); }
+  67% { transform: rotate(9deg); }
+  76% { transform: rotate(0deg); }
+  90% { transform: rotate(-48deg); }
+  100% { transform: rotate(-48deg); }
+}
+@keyframes jj-shake {
+  0%, 48%, 66%, 100% { transform: translateY(0); }
+  53% { transform: translateY(4px); }
+}
+/* 내리치기(1.2s)의 3배 주기. 내리치는 순간(각 52%)마다 점 1개씩 */
+@keyframes jj-dots {
+  0% { content: ""; }
+  17% { content: "."; }
+  51% { content: ".."; }
+  84%, 100% { content: "..."; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jj-gavel, .jj-shake { animation: none; }
 }
