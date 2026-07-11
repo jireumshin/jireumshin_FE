@@ -3698,9 +3698,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jireumnshin_FE@workspace:.":
+"jireumshin_FE@workspace:.":
   version: 0.0.0-use.local
-  resolution: "jireumnshin_FE@workspace:."
+  resolution: "jireumshin_FE@workspace:."
   dependencies:
     "@hookform/resolvers": ^5.2.2
     "@radix-ui/react-alert-dialog": ^1.1.15
