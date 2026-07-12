@@ -1,10 +1,13 @@
 "use client";
 
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 
-// 슬라이스가 생기면 여기서 등록 (예: combineReducers({ auth, trial }))
-const rootReducer = (state = {}) => state;
+import trialsReducer from "./trialsSlice";
+
+const rootReducer = combineReducers({
+  trials: trialsReducer,
+});
 
 export const store = configureStore({
   reducer: rootReducer,
@@ -17,7 +20,11 @@ export const store = configureStore({
 });
 
 // Selector 모음 — 슬라이스 추가 시 여기에 정의
-export const selectors = {};
+export const selectors = {
+  getTrialCreating: (state) => state.trials.creating,
+  getTrialError: (state) => state.trials.error,
+  getLastCreatedTrial: (state) => state.trials.lastCreated,
+};
 
 export function ReduxProvider({ children }) {
   return <Provider store={store}>{children}</Provider>;

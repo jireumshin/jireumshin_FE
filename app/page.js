@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 import Layout from '@/components/common/Layout'
 import BrutalButton from '@/components/common/BrutalButton'
 import ServerStatus from '@/components/common/ServerStatus'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { selectors } from '@/stores'
+import { createTrial } from '@/stores/trialsSlice'
 import { fieldCls } from '@/lib/formStyles'
 
 const JURORS = [
@@ -19,11 +22,12 @@ const JURORS = [
 
 export default function Home() {
   const router = useRouter()
+  const dispatch = useDispatch()
+  const creating = useSelector(selectors.getTrialCreating)
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
   const [reason, setReason] = useState('')
   const [image, setImage] = useState(null)
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!image?.url) return
@@ -43,13 +47,23 @@ export default function Home() {
   }
   const removeImage = () => setImage(null)
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
-    if (!canSubmit) return
-    setLoading(true)
-    // TODO: 백엔드 연동 후 심리 화면(/trials/[id])으로 이동
-    toast('🔨 기소 접수! 배심원단을 소집합니다')
-    setTimeout(() => setLoading(false), 1800)
+    if (!canSubmit || creating) return
+    try {
+      const priceNum = Number(price.replace(/[^0-9]/g, ''))
+      await dispatch(
+        createTrial({
+          itemName: name.trim(),
+          price: priceNum,
+          reason: reason.trim() || undefined,
+        }),
+      ).unwrap()
+      toast('🔨 기소 접수! 배심원단을 소집합니다')
+      // TODO: verdict(심리) 기능 구현 후 심리 화면으로 이동
+    } catch (err) {
+      toast.error(err?.message || '기소 접수에 실패했어요. 잠시 후 다시 시도해주세요.')
+    }
   }
 
   const loginBtn = (
@@ -68,7 +82,7 @@ export default function Home() {
         tone="red"
         type="submit"
         form="jiso-form"
-        disabled={!canSubmit}
+        disabled={!canSubmit || creating}
         className="w-full text-[17px]"
       >
         🔨 기소하고 재판 시작
@@ -81,7 +95,7 @@ export default function Home() {
 
   return (
     <Layout
-      isLoading={loading}
+      isLoading={creating}
       headerProps={{ subtitle: '새 사건 접수', right: loginBtn }}
       showBottomNavigation
       bottomNavigation={dock}
