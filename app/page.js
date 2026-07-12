@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 import Layout from '@/components/common/Layout'
 import BrutalButton from '@/components/common/BrutalButton'
-import ServerStatus from '@/components/common/ServerStatus'
+import ServerGuard from '@/components/common/ServerGuard'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { selectors } from '@/stores'
@@ -100,10 +100,8 @@ export default function Home() {
       showBottomNavigation
       bottomNavigation={dock}
     >
+      <ServerGuard />
       <form id="jiso-form" onSubmit={onSubmit} className="space-y-6 px-5 pb-6 pt-6">
-          <div className="flex justify-center">
-            <ServerStatus />
-          </div>
           <header className="text-center">
             <p className="inline-block -rotate-2 rounded-full border-2 border-jj-ink bg-jj-violet px-3 py-1 font-round text-xs text-white shadow-hard-sm">
               ⚖ 배심원 4명 대기중
