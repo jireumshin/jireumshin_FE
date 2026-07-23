@@ -1,5 +1,6 @@
 import "./globals.css";
 import { ReduxProvider } from "@/stores";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "sonner";
 
 export const metadata = {
@@ -22,8 +23,10 @@ export default function RootLayout({ children }) {
     <html lang="ko">
       <body className="antialiased">
         <ReduxProvider>
-          {children}
-          <Toaster position="top-center" />
+          <AuthProvider>
+            {children}
+            <Toaster position="top-center" />
+          </AuthProvider>
         </ReduxProvider>
       </body>
     </html>

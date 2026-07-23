@@ -7,20 +7,27 @@ import Layout from "@/components/common/Layout";
 import AuthNav from "@/components/common/AuthNav";
 import BrutalButton from "@/components/common/BrutalButton";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
 import { fieldCls } from "@/lib/formStyles";
 
 export default function IdLoginPage() {
   const router = useRouter();
-  const [id, setId] = useState("");
+  const { login, isLoading } = useAuth();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const canSubmit = id.trim() !== "" && password.trim() !== "";
+  const canSubmit = email.trim() !== "" && password.trim() !== "";
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
-    // TODO: 백엔드 연동 (일반 로그인 인증)
-    toast("로그인 기능은 곧 열려요 🙏 (준비 중)");
+    if (!canSubmit || isLoading) return;
+    try {
+      const user = await login({ email: email.trim(), password });
+      toast(`⚖️ ${user.nickname}님, 다시 오셨네요!`);
+      router.replace("/");
+    } catch (err) {
+      toast.error(typeof err === "string" ? err : "로그인에 실패했어요.");
+    }
   };
 
   return (
@@ -41,12 +48,13 @@ export default function IdLoginPage() {
 
         <fieldset className="min-w-0 space-y-4 rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-4 shadow-hard">
           <label className="block">
-            <span className="mb-2 block font-display text-sm">아이디</span>
+            <span className="mb-2 block font-display text-sm">이메일</span>
             <Input
-              value={id}
-              onChange={(e) => setId(e.target.value)}
-              placeholder="아이디"
-              autoComplete="username"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="example@email.com"
+              autoComplete="email"
               className={fieldCls}
             />
           </label>
@@ -66,21 +74,13 @@ export default function IdLoginPage() {
         <BrutalButton
           tone="ink"
           type="submit"
-          disabled={!canSubmit}
+          disabled={!canSubmit || isLoading}
           className="w-full text-[17px]"
         >
-          로그인
+          {isLoading ? "로그인 중…" : "로그인"}
         </BrutalButton>
 
         <nav className="flex items-center justify-center gap-2.5 font-round text-xs text-jj-muted">
-          <button
-            type="button"
-            onClick={() => router.push("/login/find-id")}
-            className="underline underline-offset-2 hover:text-jj-ink"
-          >
-            아이디 찾기
-          </button>
-          <span>·</span>
           <button
             type="button"
             onClick={() => router.push("/login/find-pw")}

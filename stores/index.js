@@ -4,9 +4,11 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 
 import trialsReducer from "./trialsSlice";
+import authReducer from "./authSlice";
 
 const rootReducer = combineReducers({
   trials: trialsReducer,
+  auth: authReducer,
 });
 
 export const store = configureStore({
@@ -24,6 +26,12 @@ export const selectors = {
   getTrialCreating: (state) => state.trials.creating,
   getTrialError: (state) => state.trials.error,
   getLastCreatedTrial: (state) => state.trials.lastCreated,
+  // auth
+  getUser: (state) => state.auth.user,
+  getIsAuthenticated: (state) => state.auth.user !== null,
+  getAuthStatus: (state) => state.auth.status,
+  getAuthError: (state) => state.auth.error,
+  getAuthInitialized: (state) => state.auth.initialized,
 };
 
 export function ReduxProvider({ children }) {

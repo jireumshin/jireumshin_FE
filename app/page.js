@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 import Layout from '@/components/common/Layout'
 import BrutalButton from '@/components/common/BrutalButton'
 import ServerGuard from '@/components/common/ServerGuard'
+import AuthButton from '@/components/common/AuthButton'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { selectors } from '@/stores'
@@ -21,7 +21,6 @@ const JURORS = [
 ]
 
 export default function Home() {
-  const router = useRouter()
   const dispatch = useDispatch()
   const creating = useSelector(selectors.getTrialCreating)
   const [name, setName] = useState('')
@@ -66,16 +65,6 @@ export default function Home() {
     }
   }
 
-  const loginBtn = (
-    <button
-      type="button"
-      onClick={() => router.push('/login')}
-      className="rounded-lg border-2 border-jj-ink bg-jj-paper px-3 py-2 font-display text-xs shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-    >
-      로그인
-    </button>
-  )
-
   const dock = (
     <div className="px-4 pb-5 pt-3.5">
       <BrutalButton
@@ -96,7 +85,7 @@ export default function Home() {
   return (
     <Layout
       isLoading={creating}
-      headerProps={{ subtitle: '새 사건 접수', right: loginBtn }}
+      headerProps={{ subtitle: '새 사건 접수', right: <AuthButton /> }}
       showBottomNavigation
       bottomNavigation={dock}
     >
