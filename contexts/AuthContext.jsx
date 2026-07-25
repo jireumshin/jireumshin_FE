@@ -10,6 +10,7 @@ import {
   login,
   signup,
   logout,
+  updateNickname,
   requestPasswordReset,
   resetPassword,
 } from "@/stores/authSlice";
@@ -45,6 +46,7 @@ export function useAuth() {
     login: (credentials) => dispatch(login(credentials)).unwrap(),
     signup: (data) => dispatch(signup(data)).unwrap(),
     logout: () => dispatch(logout()).unwrap(),
+    updateNickname: (nickname) => dispatch(updateNickname(nickname)).unwrap(),
     requestPasswordReset: (email) =>
       dispatch(requestPasswordReset(email)).unwrap(),
     resetPassword: (payload) => dispatch(resetPassword(payload)).unwrap(),

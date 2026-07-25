@@ -34,9 +34,14 @@ export default function AuthButton() {
 
   return (
     <div className="flex items-center gap-1.5">
-      <span className="max-w-24 truncate rounded-lg border-2 border-jj-ink bg-jj-violet px-2.5 py-2 font-display text-xs text-white">
+      <button
+        type="button"
+        onClick={() => router.push("/mypage")}
+        aria-label="마이페이지"
+        className="max-w-24 truncate rounded-lg border-2 border-jj-ink bg-jj-violet px-2.5 py-2 font-display text-xs text-white shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+      >
         👤 {user.nickname}
-      </span>
+      </button>
       <button
         type="button"
         onClick={onLogout}

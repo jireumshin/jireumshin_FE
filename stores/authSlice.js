@@ -52,6 +52,19 @@ export const logout = createAsyncThunk("auth/logout", async () => {
   return null;
 });
 
+// 닉네임 변경 — 성공 시 갱신된 유저를 반환
+export const updateNickname = createAsyncThunk(
+  "auth/updateNickname",
+  async (nickname, { rejectWithValue }) => {
+    try {
+      const res = await createApiClient().patch("/auth/nickname", { nickname });
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(extractMessage(error, "닉네임 변경에 실패했어요."));
+    }
+  },
+);
+
 // 비밀번호 재설정 요청 — 서버가 재설정 링크를 메일로 발송
 export const requestPasswordReset = createAsyncThunk(
   "auth/requestPasswordReset",
@@ -110,6 +123,10 @@ const authSlice = createSlice({
       // 로그아웃
       .addCase(logout.fulfilled, (state) => {
         state.user = null;
+      })
+      // 닉네임 변경
+      .addCase(updateNickname.fulfilled, (state, action) => {
+        state.user = action.payload;
       })
       // 로그인 / 회원가입 (둘 다 성공 시 로그인 상태)
       .addMatcher(
