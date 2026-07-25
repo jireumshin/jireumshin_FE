@@ -1,10 +1,12 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { Suspense, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { Mail } from 'lucide-react'
 import Layout from '@/components/common/Layout'
 import AuthNav from '@/components/common/AuthNav'
+import { API_BASE_URL } from '@/lib/api'
 
 const STATS = [
   { v: '12', k: '받은 재판' },
@@ -58,10 +60,27 @@ function DashboardPreview() {
   )
 }
 
+// 카카오 콜백이 실패하면 BE가 ?error=kakao 를 달아 이 화면으로 되돌려보낸다
+function KakaoErrorNotice() {
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (searchParams.get('error') === 'kakao') {
+      toast.error('카카오 로그인에 실패했어요. 다시 시도해주세요.')
+    }
+  }, [searchParams])
+
+  return null
+}
+
 export default function LoginPage() {
   const router = useRouter()
   const goBack = () => router.back()
-  const notReady = () => toast('카카오 로그인은 곧 열려요 🙏 (준비 중)')
+
+  // OAuth는 브라우저 이동이 필요해 axios가 아니라 전체 페이지 이동으로 시작한다
+  const startKakao = () => {
+    window.location.href = `${API_BASE_URL}/auth/kakao`
+  }
 
   // TODO: 익명 세션에 쌓인 기록 수로 판단. 신규 유저(기소 초기 진입)는 false.
   const hasRecords = false
@@ -71,6 +90,9 @@ export default function LoginPage() {
 
   return (
     <Layout headerProps={{ subtitle: '기록 보관하기', right: <AuthNav showBack={false} /> }}>
+      <Suspense fallback={null}>
+        <KakaoErrorNotice />
+      </Suspense>
       <section className="flex flex-col gap-5 px-5 pb-8 pt-7">
         <header className="text-center">
           <span className="text-4xl">{hasRecords ? '🗂️' : '⚖️'}</span>
@@ -113,7 +135,7 @@ export default function LoginPage() {
         )}
 
         <div className="flex flex-col gap-2.5">
-          <button type="button" onClick={notReady} className={`${btnBase} relative bg-[#FEE500] text-[#3c1e1e]`}>
+          <button type="button" onClick={startKakao} className={`${btnBase} relative bg-[#FEE500] text-[#3c1e1e]`}>
             <KakaoIcon />
             카카오로 계속하기
             <span className="absolute -top-2.5 right-3 -rotate-2 rounded-full border-2 border-jj-ink bg-jj-violet px-2 py-0.5 font-round text-[10px] text-white">
