@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'sonner'
 import Layout from '@/components/common/Layout'
@@ -22,6 +23,7 @@ const JURORS = [
 
 export default function Home() {
   const dispatch = useDispatch()
+  const router = useRouter()
   const creating = useSelector(selectors.getTrialCreating)
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
@@ -51,7 +53,7 @@ export default function Home() {
     if (!canSubmit || creating) return
     try {
       const priceNum = Number(price.replace(/[^0-9]/g, ''))
-      await dispatch(
+      const created = await dispatch(
         createTrial({
           itemName: name.trim(),
           price: priceNum,
@@ -59,7 +61,7 @@ export default function Home() {
         }),
       ).unwrap()
       toast('🔨 기소 접수! 배심원단을 소집합니다')
-      // TODO: verdict(심리) 기능 구현 후 심리 화면으로 이동
+      router.push(`/trial/?id=${created.id}`)
     } catch (err) {
       toast.error(err?.message || '기소 접수에 실패했어요. 잠시 후 다시 시도해주세요.')
     }
