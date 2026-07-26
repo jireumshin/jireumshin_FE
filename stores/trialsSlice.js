@@ -28,6 +28,19 @@ export const fetchTrial = createAsyncThunk(
   },
 );
 
+// 내 판례 목록 (최신순, 로그인 필요)
+export const fetchMyTrials = createAsyncThunk(
+  "trials/fetchMyTrials",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().get("/trials/mine");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
 // 심리 실행 → 판결 (멱등: 이미 판결난 사건은 그대로 반환)
 export const requestVerdict = createAsyncThunk(
   "trials/requestVerdict",
@@ -46,6 +59,8 @@ const initialState = {
   error: null,
   lastCreated: null,
   current: null, // 결과 화면에서 보는 사건
+  mine: [], // 내 판례 목록
+  mineLoading: false,
 };
 
 const trialsSlice = createSlice({
@@ -71,6 +86,16 @@ const trialsSlice = createSlice({
       })
       .addCase(requestVerdict.fulfilled, (state, action) => {
         state.current = action.payload;
+      })
+      .addCase(fetchMyTrials.pending, (state) => {
+        state.mineLoading = true;
+      })
+      .addCase(fetchMyTrials.fulfilled, (state, action) => {
+        state.mineLoading = false;
+        state.mine = action.payload;
+      })
+      .addCase(fetchMyTrials.rejected, (state) => {
+        state.mineLoading = false;
       });
   },
 });

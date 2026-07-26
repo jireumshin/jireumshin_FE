@@ -27,6 +27,8 @@ export const selectors = {
   getTrialError: (state) => state.trials.error,
   getLastCreatedTrial: (state) => state.trials.lastCreated,
   getCurrentTrial: (state) => state.trials.current,
+  getMyTrials: (state) => state.trials.mine,
+  getMyTrialsLoading: (state) => state.trials.mineLoading,
   // auth
   getUser: (state) => state.auth.user,
   getIsAuthenticated: (state) => state.auth.user !== null,

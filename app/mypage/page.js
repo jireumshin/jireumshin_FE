@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { X, Pencil, Check, LogOut } from "lucide-react";
+import { X, Pencil, Check, LogOut, Gavel, ChevronRight } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import { Input } from "@/components/ui/input";
@@ -170,6 +170,25 @@ export default function MyPage() {
           />
           <InfoRow label="가입일" value={formatDate(user.createdAt)} />
         </div>
+
+        <button
+          type="button"
+          onClick={() => router.push("/records")}
+          className="flex items-center gap-3 rounded-2xl border-[2.5px] border-jj-ink bg-jj-violet p-4 text-left text-white shadow-hard transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none"
+        >
+          <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border-2 border-jj-ink bg-white text-jj-ink">
+            <Gavel className="h-5 w-5" strokeWidth={2.2} />
+          </span>
+          <span className="flex-1">
+            <span className="block font-display text-base leading-tight">
+              나의 판례
+            </span>
+            <span className="block font-round text-[11px] text-white/85">
+              지금까지의 재판 기록 보기
+            </span>
+          </span>
+          <ChevronRight className="h-5 w-5 flex-none" strokeWidth={2.5} />
+        </button>
 
         <BrutalButton tone="ink" onClick={onLogout} className="w-full">
           <span className="inline-flex items-center gap-2">
