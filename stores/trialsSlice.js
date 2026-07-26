@@ -41,6 +41,22 @@ export const fetchMyTrials = createAsyncThunk(
   },
 );
 
+// 후회 재질문 응답 (본인 판례) — 갱신된 사건 반환
+export const submitFollowUp = createAsyncThunk(
+  "trials/submitFollowUp",
+  async ({ id, purchased, regret }, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().post(`/trials/${id}/follow-up`, {
+        purchased,
+        regret,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
 // 심리 실행 → 판결 (멱등: 이미 판결난 사건은 그대로 반환)
 export const requestVerdict = createAsyncThunk(
   "trials/requestVerdict",
@@ -96,6 +112,13 @@ const trialsSlice = createSlice({
       })
       .addCase(fetchMyTrials.rejected, (state) => {
         state.mineLoading = false;
+      })
+      .addCase(submitFollowUp.fulfilled, (state, action) => {
+        const updated = action.payload;
+        state.mine = state.mine.map((t) =>
+          t.id === updated.id ? updated : t,
+        );
+        if (state.current?.id === updated.id) state.current = updated;
       });
   },
 });

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { X, Gavel, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
+import { X, Gavel, ChevronRight, Clock } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
-import { fetchMyTrials } from "@/stores/trialsSlice";
+import { fetchMyTrials, submitFollowUp } from "@/stores/trialsSlice";
 import { selectors } from "@/stores";
 import { useAuth } from "@/contexts/AuthContext";
 import { guessEmoji, formatWon, tally } from "@/lib/trial";
@@ -23,16 +24,31 @@ function relativeDay(iso) {
   return `${Math.floor(days / 365)}년 전`;
 }
 
+// 판결났고, 재질문 시점이 지났고, 아직 응답 안 한 사건
+function isDue(t) {
+  if (t.status !== "JUDGED" || t.followedUpAt || !t.followUpDueAt) return false;
+  return new Date(t.followUpDueAt).getTime() <= Date.now();
+}
+
 function summarize(trials) {
   const judged = trials.filter((t) => t.status === "JUDGED");
   const guilty = judged.filter((t) => t.verdict === "GUILTY");
   const total = judged.length;
   const guiltyRate = total ? Math.round((guilty.length / total) * 100) : 0;
   const saved = guilty.reduce((sum, t) => sum + (t.price || 0), 0);
+
+  const answered = trials.filter((t) => t.followedUpAt);
+  const regretCount = answered.filter((t) => t.regret).length;
+  const regretRate = answered.length
+    ? Math.round((regretCount / answered.length) * 100)
+    : 0;
+
   return {
     guiltyRate,
     notGuiltyRate: total ? 100 - guiltyRate : 0,
     saved,
+    answeredCount: answered.length,
+    regretRate,
   };
 }
 
@@ -66,8 +82,19 @@ export default function RecordsPage() {
     </button>
   );
 
-  const { guiltyRate, notGuiltyRate, saved } = summarize(trials);
+  const { guiltyRate, notGuiltyRate, saved, answeredCount, regretRate } =
+    summarize(trials);
+  const dueFollowUps = trials.filter(isDue);
   const isEmpty = !loading && trials.length === 0;
+
+  const onAnswer = async (id, purchased, regret) => {
+    try {
+      await dispatch(submitFollowUp({ id, purchased, regret })).unwrap();
+      toast("🗳️ 후회 여부를 기록했어요");
+    } catch (e) {
+      toast.error(typeof e === "string" ? e : "응답 저장에 실패했어요");
+    }
+  };
 
   return (
     <Layout
@@ -104,6 +131,22 @@ export default function RecordsPage() {
               </p>
             </div>
 
+            {/* 다시 물어볼 판례 (재질문 due) */}
+            {dueFollowUps.length > 0 && (
+              <div className="flex flex-col gap-2.5 rounded-2xl border-[2.5px] border-jj-ink bg-jj-violet-soft p-3.5 shadow-hard">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-jj-violet" strokeWidth={2.5} />
+                  <h2 className="font-display text-sm">다시 물어볼게요</h2>
+                  <span className="rounded-full bg-jj-violet px-2 py-0.5 font-round text-[10.5px] text-white">
+                    {dueFollowUps.length}건
+                  </span>
+                </div>
+                {dueFollowUps.map((t) => (
+                  <FollowUpCard key={t.id} trial={t} onAnswer={onAnswer} />
+                ))}
+              </div>
+            )}
+
             {/* 유죄/무죄율 */}
             <div className="grid grid-cols-2 gap-3">
               <RateCard tone="red" label="유죄율 (사지마)" rate={guiltyRate} />
@@ -113,6 +156,26 @@ export default function RecordsPage() {
                 rate={notGuiltyRate}
               />
             </div>
+
+            {/* 후회율 (재질문 응답 있을 때만) */}
+            {answeredCount > 0 && (
+              <div className="rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-4 shadow-hard-sm">
+                <div className="flex items-baseline justify-between">
+                  <p className="font-round text-[11px] text-jj-muted">
+                    후회율 (재질문 {answeredCount}건 응답)
+                  </p>
+                  <p className="font-display text-2xl leading-none text-jj-violet">
+                    {regretRate}%
+                  </p>
+                </div>
+                <div className="mt-2.5 h-2 overflow-hidden rounded-full border-2 border-jj-ink bg-white">
+                  <span
+                    className="block h-full bg-jj-violet"
+                    style={{ width: `${regretRate}%` }}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* 판례 리스트 */}
             <div className="mt-2 flex items-center gap-2">
@@ -135,6 +198,93 @@ export default function RecordsPage() {
         )}
       </section>
     </Layout>
+  );
+}
+
+function FollowUpCard({ trial, onAnswer }) {
+  const [purchased, setPurchased] = useState(null); // null | true | false
+  const [busy, setBusy] = useState(false);
+
+  const answer = async (regret) => {
+    setBusy(true);
+    try {
+      await onAnswer(trial.id, purchased, regret);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const q2 = purchased
+    ? [
+        { label: "😊 만족해요", regret: false, tone: "green" },
+        { label: "😩 후회해요", regret: true, tone: "red" },
+      ]
+    : [
+        { label: "👍 잘 참았어요", regret: false, tone: "green" },
+        { label: "😢 그래도 살걸", regret: true, tone: "red" },
+      ];
+
+  return (
+    <div className="rounded-[14px] border-2 border-jj-ink bg-jj-paper p-3">
+      <div className="flex items-center gap-2.5">
+        <span className="grid h-9 w-9 flex-none place-items-center rounded-lg border-2 border-jj-ink bg-jj-violet-soft text-lg">
+          {guessEmoji(trial.itemName)}
+        </span>
+        <p className="min-w-0 flex-1 truncate font-display text-sm">
+          {trial.itemName}
+        </p>
+      </div>
+
+      <p className="mt-2.5 font-round text-[12px] text-jj-ink">
+        {purchased === null
+          ? "그때 그 물건, 결국 샀어요?"
+          : purchased
+            ? "사고 나서 어때요?"
+            : "지금 돌아보면 어때요?"}
+      </p>
+
+      <div className="mt-2 grid grid-cols-2 gap-2">
+        {purchased === null ? (
+          <>
+            <ChoiceButton onClick={() => setPurchased(true)}>
+              🛍️ 샀어요
+            </ChoiceButton>
+            <ChoiceButton onClick={() => setPurchased(false)}>
+              🙅 안 샀어요
+            </ChoiceButton>
+          </>
+        ) : (
+          q2.map((o) => (
+            <ChoiceButton
+              key={o.label}
+              tone={o.tone}
+              disabled={busy}
+              onClick={() => answer(o.regret)}
+            >
+              {o.label}
+            </ChoiceButton>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ChoiceButton({ tone, children, ...props }) {
+  const toneCls =
+    tone === "red"
+      ? "bg-jj-red-soft"
+      : tone === "green"
+        ? "bg-jj-green-soft"
+        : "bg-jj-app";
+  return (
+    <button
+      type="button"
+      className={`rounded-lg border-2 border-jj-ink px-2 py-2.5 font-round text-[12px] shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-40 ${toneCls}`}
+      {...props}
+    >
+      {children}
+    </button>
   );
 }
 
