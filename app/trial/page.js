@@ -4,9 +4,12 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { Share2, Home, Gavel } from "lucide-react";
+import { Share2, Gavel } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
+import BrutalCard from "@/components/common/BrutalCard";
+import EmojiThumb from "@/components/common/EmojiThumb";
+import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import { fetchTrial, requestVerdict } from "@/stores/trialsSlice";
 import { guessEmoji, formatWon, tally } from "@/lib/trial";
 
@@ -129,8 +132,8 @@ function TrialResult() {
     <Layout headerProps={{ subtitle: "판결 완료" }}>
       <section className="flex flex-col gap-4 px-5 pb-8 pt-6">
         {/* 판결 배너 */}
-        <div
-          className={`rounded-2xl border-[2.5px] border-jj-ink p-5 text-center text-white shadow-hard ${
+        <BrutalCard
+          className={`p-5 text-center text-white ${
             guilty ? "bg-jj-red" : "bg-jj-green"
           }`}
         >
@@ -141,13 +144,11 @@ function TrialResult() {
           <div className="mt-2 inline-block rounded-full border-2 border-jj-ink bg-jj-ink/20 px-3 py-0.5 font-round text-xs">
             배심원 {t.label}
           </div>
-        </div>
+        </BrutalCard>
 
         {/* 기소 대상 */}
-        <div className="flex items-center gap-3 rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-3.5 shadow-hard-sm">
-          <span className="grid h-12 w-12 flex-none place-items-center rounded-xl border-2 border-jj-ink bg-jj-violet-soft text-2xl">
-            {guessEmoji(trial.itemName)}
-          </span>
+        <BrutalCard shadow="sm" className="flex items-center gap-3 p-3.5">
+          <EmojiThumb size="lg">{guessEmoji(trial.itemName)}</EmojiThumb>
           <div className="min-w-0 flex-1">
             <div className="truncate font-display text-[15px]">{trial.itemName}</div>
             {trial.reason && (
@@ -159,58 +160,52 @@ function TrialResult() {
           <div className="flex-none font-display text-sm text-jj-violet">
             {formatWon(trial.price)}
           </div>
-        </div>
+        </BrutalCard>
 
         {/* 배심원 평결 */}
-        <div className="rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-4 shadow-hard">
+        <BrutalCard className="p-4">
           <div className="mb-3 font-display text-sm">⚖ 배심원 평결</div>
           <ul className="flex flex-col gap-2.5">
-            {jury.map((j) => {
-              const g = j.vote === "GUILTY";
-              return (
-                <li key={j.juror} className="flex items-start gap-2.5">
-                  <span className="grid h-9 w-9 flex-none place-items-center rounded-lg border-2 border-jj-ink bg-jj-app text-lg">
-                    {j.emoji}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-display text-[13px]">{j.juror}</span>
-                      <span
-                        className={`rounded-full border-2 border-jj-ink px-1.5 py-0 font-round text-[9px] ${
-                          g ? "bg-jj-red-soft text-[#b3352b]" : "bg-jj-green-soft text-[#0a7a56]"
-                        }`}
-                      >
-                        {g ? "유죄" : "무죄"}
-                      </span>
-                    </div>
-                    <p className="mt-0.5 font-round text-[11px] leading-relaxed text-jj-ink/80">
-                      {j.argument}
-                    </p>
+            {jury.map((j) => (
+              <li key={j.juror} className="flex items-start gap-2.5">
+                <EmojiThumb size="sm" className="bg-jj-app">
+                  {j.emoji}
+                </EmojiThumb>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-display text-[13px]">{j.juror}</span>
+                    <VerdictChip
+                      verdict={j.vote}
+                      className="px-1.5 py-0 text-[9px]"
+                    />
                   </div>
-                </li>
-              );
-            })}
+                  <p className="mt-0.5 font-round text-[11px] leading-relaxed text-jj-ink/80">
+                    {j.argument}
+                  </p>
+                </div>
+              </li>
+            ))}
           </ul>
-        </div>
+        </BrutalCard>
 
         {/* 판결 요지 */}
-        <div className="rounded-2xl border-[2.5px] border-jj-ink bg-jj-ink p-4 text-white shadow-hard">
+        <BrutalCard className="bg-jj-ink p-4 text-white">
           <div className="mb-1.5 font-round text-[11px] text-jj-yellow">📜 판결 요지</div>
           <p className="text-[13px] leading-relaxed">{trial.summary}</p>
-        </div>
+        </BrutalCard>
 
         {/* 통계 */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-3.5 text-center shadow-hard-sm">
+          <BrutalCard shadow="sm" className="p-3.5 text-center">
             <div className="font-round text-[11px] text-jj-muted">예상 후회지수</div>
             <div className="mt-1 font-display text-3xl text-jj-red">{trial.regretIndex}%</div>
-          </div>
-          <div className="rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-3.5 text-center shadow-hard-sm">
+          </BrutalCard>
+          <BrutalCard shadow="sm" className="p-3.5 text-center">
             <div className="font-round text-[11px] text-jj-muted">
               {guilty ? "아낀 돈" : "쓴 돈"}
             </div>
             <div className="mt-1 font-display text-3xl text-jj-green">{saved}</div>
-          </div>
+          </BrutalCard>
         </div>
 
         {/* 액션 */}

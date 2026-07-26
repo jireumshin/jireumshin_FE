@@ -6,7 +6,11 @@ import { toast } from "sonner";
 import { X, Pencil, Check, LogOut, Gavel, ChevronRight } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
+import BrutalCard from "@/components/common/BrutalCard";
+import BrutalIconButton from "@/components/common/BrutalIconButton";
+import EmojiThumb from "@/components/common/EmojiThumb";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
 import { fieldCls } from "@/lib/formStyles";
 
@@ -68,38 +72,31 @@ export default function MyPage() {
   };
 
   const closeBtn = (
-    <button
-      type="button"
-      onClick={() => router.push("/")}
-      aria-label="닫기"
-      className="grid h-9 w-9 place-items-center rounded-lg border-[2.5px] border-jj-ink bg-jj-paper shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-    >
+    <BrutalIconButton aria-label="닫기" onClick={() => router.push("/")}>
       <X className="h-4 w-4" strokeWidth={2.5} />
-    </button>
+    </BrutalIconButton>
   );
 
   return (
     <Layout headerProps={{ subtitle: "마이페이지", right: closeBtn }}>
       <section className="flex flex-col gap-5 px-5 pb-8 pt-7">
         <header className="text-center">
-          <span className="mx-auto grid h-20 w-20 place-items-center rounded-2xl border-[2.5px] border-jj-ink bg-jj-violet-soft text-4xl shadow-hard">
+          <EmojiThumb className="mx-auto h-20 w-20 rounded-2xl border-[2.5px] text-4xl shadow-hard">
             👤
-          </span>
+          </EmojiThumb>
           <h1 className="mt-3.5 font-display text-2xl leading-tight">
             {user.nickname}
           </h1>
-          <span
-            className={`mt-2 inline-block rounded-full border-2 border-jj-ink px-3 py-0.5 font-round text-[11px] shadow-hard-sm ${
-              isKakao
-                ? "bg-[#FEE500] text-[#3c1e1e]"
-                : "bg-jj-violet text-white"
+          <Badge
+            className={`mt-2 border-2 border-jj-ink px-3 py-0.5 font-round text-[11px] shadow-hard-sm ${
+              isKakao ? "bg-[#FEE500] text-[#3c1e1e]" : "bg-jj-violet text-white"
             }`}
           >
             {isKakao ? "카카오 로그인" : "이메일 로그인"}
-          </span>
+          </Badge>
         </header>
 
-        <div className="flex flex-col gap-4 rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-4 shadow-hard">
+        <BrutalCard className="flex flex-col gap-4 p-4">
           {/* 닉네임 (편집 가능) */}
           {editing ? (
             <div>
@@ -115,23 +112,25 @@ export default function MyPage() {
                   placeholder="새 닉네임"
                   className={`${fieldCls} flex-1`}
                 />
-                <button
-                  type="button"
+                <BrutalIconButton
+                  tone="green"
+                  size="md"
                   onClick={onSave}
                   disabled={!canSave}
                   aria-label="저장"
-                  className="grid h-11 w-11 flex-none place-items-center rounded-xl border-[2.5px] border-jj-ink bg-jj-green text-white shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-40"
+                  className="flex-none"
                 >
                   <Check className="h-4 w-4" strokeWidth={3} />
-                </button>
-                <button
-                  type="button"
+                </BrutalIconButton>
+                <BrutalIconButton
+                  tone="app"
+                  size="md"
                   onClick={() => setEditing(false)}
                   aria-label="취소"
-                  className="grid h-11 w-11 flex-none place-items-center rounded-xl border-[2.5px] border-jj-ink bg-jj-app shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+                  className="flex-none"
                 >
                   <X className="h-4 w-4" strokeWidth={3} />
-                </button>
+                </BrutalIconButton>
               </div>
               {trimmed && !valid && (
                 <p className="mt-1.5 font-round text-[11px] text-jj-red">
@@ -149,14 +148,14 @@ export default function MyPage() {
                   {user.nickname}
                 </span>
               </div>
-              <button
-                type="button"
+              <BrutalIconButton
+                tone="app"
                 onClick={startEdit}
                 aria-label="닉네임 변경"
-                className="grid h-9 w-9 flex-none place-items-center rounded-lg border-2 border-jj-ink bg-jj-app shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+                className="flex-none"
               >
                 <Pencil className="h-3.5 w-3.5" strokeWidth={2.5} />
-              </button>
+              </BrutalIconButton>
             </div>
           )}
 
@@ -169,7 +168,7 @@ export default function MyPage() {
             muted={!user.email}
           />
           <InfoRow label="가입일" value={formatDate(user.createdAt)} />
-        </div>
+        </BrutalCard>
 
         <button
           type="button"

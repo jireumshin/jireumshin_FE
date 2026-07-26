@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { Mail } from 'lucide-react'
 import Layout from '@/components/common/Layout'
 import AuthNav from '@/components/common/AuthNav'
+import BrutalCard from '@/components/common/BrutalCard'
 import { API_BASE_URL } from '@/lib/api'
 
 const STATS = [
@@ -31,7 +32,7 @@ function DashboardPreview() {
   return (
     <section aria-hidden className="select-none">
       <p className="mb-2 text-center font-round text-xs text-jj-muted">🔒 로그인하면 이런 판례가 쌓여요</p>
-      <div className="rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-3 shadow-hard">
+      <BrutalCard className="p-3">
         <div className="rounded-xl bg-jj-ink px-3.5 py-3 text-white">
           <p className="font-round text-[10px] text-jj-yellow">💰 재판으로 아낀 돈</p>
           <p className="mt-0.5 font-display text-[26px] leading-none">
@@ -55,7 +56,7 @@ function DashboardPreview() {
             </li>
           ))}
         </ul>
-      </div>
+      </BrutalCard>
     </section>
   )
 }

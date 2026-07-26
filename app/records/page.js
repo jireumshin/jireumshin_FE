@@ -4,25 +4,18 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { X, Gavel, ChevronRight, Clock } from "lucide-react";
+import { X, Gavel, Clock } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
+import BrutalCard from "@/components/common/BrutalCard";
+import BrutalIconButton from "@/components/common/BrutalIconButton";
+import StatBar from "@/components/common/StatBar";
+import EmojiThumb from "@/components/common/EmojiThumb";
+import TrialListItem from "@/components/widgets/trials/TrialListItem";
 import { fetchMyTrials, submitFollowUp } from "@/stores/trialsSlice";
 import { selectors } from "@/stores";
 import { useAuth } from "@/contexts/AuthContext";
-import { guessEmoji, formatWon, tally } from "@/lib/trial";
-
-function relativeDay(iso) {
-  const then = new Date(iso).getTime();
-  if (Number.isNaN(then)) return "";
-  const days = Math.floor((Date.now() - then) / 86400000);
-  if (days <= 0) return "오늘";
-  if (days === 1) return "어제";
-  if (days < 7) return `${days}일 전`;
-  if (days < 30) return `${Math.floor(days / 7)}주 전`;
-  if (days < 365) return `${Math.floor(days / 30)}개월 전`;
-  return `${Math.floor(days / 365)}년 전`;
-}
+import { guessEmoji, formatWon } from "@/lib/trial";
 
 // 판결났고, 재질문 시점이 지났고, 아직 응답 안 한 사건
 function isDue(t) {
@@ -72,14 +65,9 @@ export default function RecordsPage() {
   }
 
   const closeBtn = (
-    <button
-      type="button"
-      onClick={() => router.push("/")}
-      aria-label="닫기"
-      className="grid h-9 w-9 place-items-center rounded-lg border-[2.5px] border-jj-ink bg-jj-paper shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-    >
+    <BrutalIconButton aria-label="닫기" onClick={() => router.push("/")}>
       <X className="h-4 w-4" strokeWidth={2.5} />
-    </button>
+    </BrutalIconButton>
   );
 
   const { guiltyRate, notGuiltyRate, saved, answeredCount, regretRate } =
@@ -97,10 +85,7 @@ export default function RecordsPage() {
   };
 
   return (
-    <Layout
-      headerProps={{ subtitle: "나의 판례", right: closeBtn }}
-      allowScroll
-    >
+    <Layout headerProps={{ subtitle: "나의 판례", right: closeBtn }} allowScroll>
       <section className="flex flex-col gap-3 px-5 pb-10 pt-6">
         <header className="mb-1">
           <h1 className="font-display text-2xl leading-tight">
@@ -116,7 +101,7 @@ export default function RecordsPage() {
         ) : (
           <>
             {/* 아낀 돈 hero */}
-            <div className="relative overflow-hidden rounded-[20px] border-[2.5px] border-jj-ink bg-jj-ink p-5 text-white shadow-hard">
+            <BrutalCard className="relative overflow-hidden rounded-[20px] bg-jj-ink p-5 text-white">
               <span className="pointer-events-none absolute -bottom-3 -right-2 text-8xl opacity-15 select-none">
                 💰
               </span>
@@ -129,11 +114,11 @@ export default function RecordsPage() {
               <p className="mt-2 text-[11px] font-semibold text-white/70">
                 유죄 판결로 참은 지출의 합계예요
               </p>
-            </div>
+            </BrutalCard>
 
             {/* 다시 물어볼 판례 (재질문 due) */}
             {dueFollowUps.length > 0 && (
-              <div className="flex flex-col gap-2.5 rounded-2xl border-[2.5px] border-jj-ink bg-jj-violet-soft p-3.5 shadow-hard">
+              <BrutalCard className="flex flex-col gap-2.5 bg-jj-violet-soft p-3.5">
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-jj-violet" strokeWidth={2.5} />
                   <h2 className="font-display text-sm">다시 물어볼게요</h2>
@@ -144,37 +129,26 @@ export default function RecordsPage() {
                 {dueFollowUps.map((t) => (
                   <FollowUpCard key={t.id} trial={t} onAnswer={onAnswer} />
                 ))}
-              </div>
+              </BrutalCard>
             )}
 
             {/* 유죄/무죄율 */}
             <div className="grid grid-cols-2 gap-3">
-              <RateCard tone="red" label="유죄율 (사지마)" rate={guiltyRate} />
-              <RateCard
+              <StatBar tone="red" label="유죄율 (사지마)" value={guiltyRate} />
+              <StatBar
                 tone="green"
                 label="무죄율 (사도됨)"
-                rate={notGuiltyRate}
+                value={notGuiltyRate}
               />
             </div>
 
             {/* 후회율 (재질문 응답 있을 때만) */}
             {answeredCount > 0 && (
-              <div className="rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-4 shadow-hard-sm">
-                <div className="flex items-baseline justify-between">
-                  <p className="font-round text-[11px] text-jj-muted">
-                    후회율 (재질문 {answeredCount}건 응답)
-                  </p>
-                  <p className="font-display text-2xl leading-none text-jj-violet">
-                    {regretRate}%
-                  </p>
-                </div>
-                <div className="mt-2.5 h-2 overflow-hidden rounded-full border-2 border-jj-ink bg-white">
-                  <span
-                    className="block h-full bg-jj-violet"
-                    style={{ width: `${regretRate}%` }}
-                  />
-                </div>
-              </div>
+              <StatBar
+                tone="violet"
+                label={`후회율 (재질문 ${answeredCount}건 응답)`}
+                value={regretRate}
+              />
             )}
 
             {/* 판례 리스트 */}
@@ -187,7 +161,7 @@ export default function RecordsPage() {
 
             <div className="flex flex-col gap-2.5">
               {trials.map((t) => (
-                <TrialRow
+                <TrialListItem
                   key={t.id}
                   trial={t}
                   onClick={() => router.push(`/trial/?id=${t.id}`)}
@@ -225,11 +199,9 @@ function FollowUpCard({ trial, onAnswer }) {
       ];
 
   return (
-    <div className="rounded-[14px] border-2 border-jj-ink bg-jj-paper p-3">
+    <BrutalCard shadow="none" className="rounded-[14px] border-2 p-3">
       <div className="flex items-center gap-2.5">
-        <span className="grid h-9 w-9 flex-none place-items-center rounded-lg border-2 border-jj-ink bg-jj-violet-soft text-lg">
-          {guessEmoji(trial.itemName)}
-        </span>
+        <EmojiThumb size="sm">{guessEmoji(trial.itemName)}</EmojiThumb>
         <p className="min-w-0 flex-1 truncate font-display text-sm">
           {trial.itemName}
         </p>
@@ -266,7 +238,7 @@ function FollowUpCard({ trial, onAnswer }) {
           ))
         )}
       </div>
-    </div>
+    </BrutalCard>
   );
 }
 
@@ -288,76 +260,9 @@ function ChoiceButton({ tone, children, ...props }) {
   );
 }
 
-function RateCard({ tone, label, rate }) {
-  const isRed = tone === "red";
-  return (
-    <div className="rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-4 shadow-hard-sm">
-      <p className="font-round text-[11px] text-jj-muted">{label}</p>
-      <p
-        className={`mt-1 font-display text-3xl leading-none ${
-          isRed ? "text-jj-red" : "text-jj-green"
-        }`}
-      >
-        {rate}%
-      </p>
-      <div className="mt-2.5 h-2 overflow-hidden rounded-full border-2 border-jj-ink bg-white">
-        <span
-          className={`block h-full ${isRed ? "bg-jj-red" : "bg-jj-green"}`}
-          style={{ width: `${rate}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function TrialRow({ trial, onClick }) {
-  const pending = trial.status !== "JUDGED";
-  const guilty = trial.verdict === "GUILTY";
-  const chip = pending
-    ? { cls: "bg-jj-app text-jj-muted", text: "심리 중" }
-    : guilty
-      ? {
-          cls: "bg-jj-red-soft text-jj-red",
-          text: tally(trial.jury || [], trial.verdict).label,
-        }
-      : {
-          cls: "bg-jj-green-soft text-jj-green",
-          text: tally(trial.jury || [], trial.verdict).label,
-        };
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex items-center gap-3 rounded-[15px] border-[2.5px] border-jj-ink bg-jj-paper p-3 text-left shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-    >
-      <span className="grid h-11 w-11 flex-none place-items-center rounded-xl border-2 border-jj-ink bg-jj-violet-soft text-xl">
-        {guessEmoji(trial.itemName)}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block truncate font-display text-sm leading-tight">
-          {trial.itemName}
-        </span>
-        <span className="mt-0.5 block font-round text-[10.5px] text-jj-muted">
-          {relativeDay(trial.createdAt)} · {formatWon(trial.price)}
-        </span>
-      </span>
-      <span
-        className={`flex-none rounded-full border-2 border-jj-ink px-2.5 py-1 font-round text-[11px] ${chip.cls}`}
-      >
-        {chip.text}
-      </span>
-      <ChevronRight
-        className="h-4 w-4 flex-none text-jj-muted"
-        strokeWidth={2.5}
-      />
-    </button>
-  );
-}
-
 function EmptyState({ onStart }) {
   return (
-    <div className="mt-6 flex flex-col items-center gap-4 rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper px-6 py-10 text-center shadow-hard">
+    <BrutalCard className="mt-6 flex flex-col items-center gap-4 px-6 py-10 text-center">
       <span className="grid h-16 w-16 place-items-center rounded-2xl border-[2.5px] border-jj-ink bg-jj-violet-soft text-3xl shadow-hard-sm">
         <Gavel className="h-8 w-8" strokeWidth={2} />
       </span>
@@ -370,6 +275,6 @@ function EmptyState({ onStart }) {
       <BrutalButton tone="red" onClick={onStart} className="w-full">
         지름신 기소하기
       </BrutalButton>
-    </div>
+    </BrutalCard>
   );
 }

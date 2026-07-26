@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { X } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
+import BrutalIconButton from "@/components/common/BrutalIconButton";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { fieldCls } from "@/lib/formStyles";
@@ -43,14 +44,9 @@ export default function SignupPage() {
   };
 
   const closeBtn = (
-    <button
-      type="button"
-      onClick={() => router.back()}
-      aria-label="닫기"
-      className="grid h-9 w-9 place-items-center rounded-lg border-[2.5px] border-jj-ink bg-jj-paper shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-    >
+    <BrutalIconButton aria-label="닫기" onClick={() => router.back()}>
       <X className="h-4 w-4" strokeWidth={2.5} />
-    </button>
+    </BrutalIconButton>
   );
 
   return (

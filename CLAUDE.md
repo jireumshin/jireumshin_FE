@@ -125,12 +125,13 @@ export const createData = createAsyncThunk(
 - `RouteAuthChecker` 컴포넌트로 자동 라우트 보호
 - 인증 모달은 `AuthContext`에서 자동 관리
 
-### 파일 구조 규칙
-- 컴포넌트는 기능별로 폴더 분리
-  - `common/`: 공통 컴포넌트
-  - `dialog/`: 모달 컴포넌트
-  - `ui/`: shadcn/ui 컴포넌트
-  - `widgets/`: 복합 위젯 컴포넌트
+### 파일 구조 규칙 (컴포넌트 배치 — 추가 시 위치 준수)
+- `components/`는 성격에 따라 아래 위치에 배치한다. **새 컴포넌트를 만들 때 반드시 알맞은 폴더에 넣을 것.**
+  - **`common/`**: **여러 페이지에서 공통으로** 쓰는 컴포넌트. 레이아웃·헤더 등 셸과, 서비스 톤 브랜드 프리미티브·범용 조각 (예: `Layout`, `Header`, `BrutalButton`, `BrutalCard`, `BrutalIconButton`, `EmojiThumb`, `StatBar`).
+  - **`ui/`**: **shadcn/ui·radix를 설치하면 자동으로 생성되는 위치.** 여기에 직접 만들어 넣지 않는다. 부족한 컴포넌트는 **shadcn MCP로 설치**해 추가하고, 서비스 톤이 필요하면 `common/`에서 래핑한다 (예: `BrutalButton`=shadcn `Button` 래핑, `VerdictChip`=`Badge` 래핑).
+  - **`widgets/<기능>/`**: **특정 기능 단위**에서 컴포넌트로 뽑을 만한 것. 기능별 세부 폴더로 분리 (예: `widgets/trials/TrialListItem.jsx`, `widgets/trials/VerdictChip.jsx`).
+  - **`dialog/<기능>/`**: 모달. 기능별 세부 폴더로 분리.
+- 판단 기준: **여러 페이지 공통 → `common/`, 특정 기능 전용 → `widgets/<기능>/`, 모달 → `dialog/<기능>/`, 설치 산출물 → `ui/`(직접 편집 지양).**
 - 각 기능 폴더 내부에 `hooks/` 폴더로 관련 훅 분리 가능
 - **이미지 및 정적 자산 파일**: `public/assets/` 폴더에 **PNG**로 관리
   - `/assets/파일명.png` 경로로 참조 (예: `<img src="/assets/logo.png" />`)

@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { X } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
+import BrutalCard from "@/components/common/BrutalCard";
+import BrutalIconButton from "@/components/common/BrutalIconButton";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { fieldCls } from "@/lib/formStyles";
@@ -33,14 +35,9 @@ export default function FindPwPage() {
   };
 
   const closeBtn = (
-    <button
-      type="button"
-      onClick={() => router.back()}
-      aria-label="닫기"
-      className="grid h-9 w-9 place-items-center rounded-lg border-[2.5px] border-jj-ink bg-jj-paper shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
-    >
+    <BrutalIconButton aria-label="닫기" onClick={() => router.back()}>
       <X className="h-4 w-4" strokeWidth={2.5} />
-    </button>
+    </BrutalIconButton>
   );
 
   return (
@@ -107,12 +104,12 @@ export default function FindPwPage() {
             </p>
           </header>
 
-          <div className="rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-4 font-round text-xs leading-relaxed text-jj-muted shadow-hard">
+          <BrutalCard className="p-4 font-round text-xs leading-relaxed text-jj-muted">
             · 링크는 <strong className="text-jj-ink">30분간만</strong> 유효하고
             한 번만 사용할 수 있어요
             <br />· 메일이 안 보이면 스팸함도 확인해주세요
             <br />· 가입되지 않은 이메일에는 메일이 가지 않아요
-          </div>
+          </BrutalCard>
 
           <BrutalButton
             tone="ink"
