@@ -25,6 +25,7 @@
 *.pem
 
 .env
+.env.production
 
 # debug
 npm-debug.log*
