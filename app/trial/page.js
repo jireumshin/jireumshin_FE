@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { Share2, Gavel, Scale, Bookmark } from "lucide-react";
 import Layout from "@/components/common/Layout";
@@ -12,6 +12,7 @@ import EmojiThumb from "@/components/common/EmojiThumb";
 import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import DefenseChat from "@/components/widgets/trials/DefenseChat";
 import { useAuth } from "@/contexts/AuthContext";
+import { selectors } from "@/stores";
 import { fetchTrial, requestVerdict, claimTrial } from "@/stores/trialsSlice";
 import { guessEmoji, formatWon, tally, defenseInfo } from "@/lib/trial";
 
@@ -30,6 +31,7 @@ function TrialResult() {
   const dispatch = useDispatch();
   const id = useSearchParams().get("id");
   const { isAuthenticated, initialized } = useAuth();
+  const currentTrial = useSelector(selectors.getCurrentTrial);
 
   const [phase, setPhase] = useState("loading"); // loading | deliberating | result | error
   const [trial, setTrial] = useState(null);
@@ -71,26 +73,12 @@ function TrialResult() {
     };
   }, [id, dispatch]);
 
-  // 로그인 후 돌아왔을 때, '저장하기'를 눌렀던 이 브라우저에 한해 익명 판례를 자동 귀속.
-  useEffect(() => {
-    if (phase !== "result" || !trial || !initialized) return;
-    if (!isAuthenticated || trial.userId) return;
-    const key = `claim:${trial.id}`;
-    if (typeof window === "undefined" || !sessionStorage.getItem(key)) return;
-    sessionStorage.removeItem(key);
-    dispatch(claimTrial(trial.id))
-      .unwrap()
-      .then((updated) => {
-        setTrial(updated);
-        toast("🔖 이 판례를 내 판례로 저장했어요");
-      })
-      .catch(() => {});
-  }, [phase, trial, isAuthenticated, initialized, dispatch]);
-
+  // 로그인 유도 → 카카오/일반 로그인 선택 화면(/login). claim은 로그인 성공 후
+  // AuthProvider의 전역 처리기가 착지 페이지와 무관하게 수행한다(카카오 대응).
   const saveToAccount = () => {
     sessionStorage.setItem(`claim:${trial.id}`, "1");
     const redirect = `/trial/?id=${trial.id}`;
-    router.push(`/login/id?redirect=${encodeURIComponent(redirect)}`);
+    router.push(`/login?redirect=${encodeURIComponent(redirect)}`);
   };
 
   const claimNow = async () => {
@@ -173,6 +161,10 @@ function TrialResult() {
   const jury = Array.isArray(trial.jury) ? trial.jury : [];
   const t = tally(jury, trial.verdict);
   const saved = guilty ? formatWon(trial.price) : "0원";
+  // 전역 claim이 store(current)를 갱신하면 CTA가 사라지도록 store 기준도 함께 본다
+  const owned =
+    !!trial.userId ||
+    (currentTrial?.id === trial.id && !!currentTrial?.userId);
   const { closed: defenseClosed, inExtension, roundsLeft } = defenseInfo(trial);
   const usedRounds = trial.defenseRounds ?? 0;
   const defenseLabel = defenseClosed
@@ -213,7 +205,7 @@ function TrialResult() {
         </BrutalCard>
 
         {/* 익명 판례 저장 유도 (로그인/가입) */}
-        {initialized && !trial.userId && (
+        {initialized && !owned && (
           <BrutalCard
             shadow="sm"
             className="flex items-center gap-3 border-jj-violet bg-jj-violet-soft p-3.5"

@@ -14,16 +14,23 @@ import {
   requestPasswordReset,
   resetPassword,
 } from "@/stores/authSlice";
+import { claimAllPending } from "@/lib/pendingClaim";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const dispatch = useDispatch();
   const initialized = useSelector(selectors.getAuthInitialized);
+  const user = useSelector(selectors.getUser);
 
   useEffect(() => {
     if (!initialized) dispatch(fetchMe());
   }, [dispatch, initialized]);
+
+  // 로그인되면(카카오/일반 무관) 저장 표시해둔 익명 판례를 본인 것으로 귀속
+  useEffect(() => {
+    if (initialized && user) claimAllPending(dispatch);
+  }, [initialized, user, dispatch]);
 
   return <AuthContext.Provider value={null}>{children}</AuthContext.Provider>;
 }

@@ -83,6 +83,12 @@ export default function LoginPage() {
     window.location.href = `${API_BASE_URL}/auth/kakao`
   }
 
+  // 일반 로그인으로 갈 때 저장 유도의 redirect(?redirect=)를 이어서 전달
+  const goEmailLogin = () => {
+    const r = new URLSearchParams(window.location.search).get('redirect')
+    router.push(`/login/id${r ? `?redirect=${encodeURIComponent(r)}` : ''}`)
+  }
+
   // TODO: 익명 세션에 쌓인 기록 수로 판단. 신규 유저(기소 초기 진입)는 false.
   const hasRecords = false
 
@@ -145,7 +151,7 @@ export default function LoginPage() {
           </button>
           <button
             type="button"
-            onClick={() => router.push('/login/id')}
+            onClick={goEmailLogin}
             className={`${btnBase} bg-jj-paper text-jj-ink`}
           >
             <Mail className="h-5 w-5 flex-none" strokeWidth={2.5} />
