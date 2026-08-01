@@ -37,10 +37,16 @@ export default function SignupPage() {
         password,
       });
       toast(`✍️ ${user.nickname}님, 재판소에 등록됐어요!`);
-      router.replace("/");
+      const r = new URLSearchParams(window.location.search).get("redirect");
+      router.replace(r || "/");
     } catch (err) {
       toast.error(typeof err === "string" ? err : "회원가입에 실패했어요.");
     }
+  };
+
+  const goLogin = () => {
+    const r = new URLSearchParams(window.location.search).get("redirect");
+    router.push(`/login/id${r ? `?redirect=${encodeURIComponent(r)}` : ""}`);
   };
 
   const closeBtn = (
@@ -132,7 +138,7 @@ export default function SignupPage() {
           이미 계정이 있나요?{" "}
           <button
             type="button"
-            onClick={() => router.push("/login/id")}
+            onClick={goLogin}
             className="font-bold text-jj-violet underline underline-offset-2"
           >
             로그인

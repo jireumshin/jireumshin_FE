@@ -186,11 +186,14 @@ export default function Home() {
               <Textarea
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                maxLength={200}
+                maxLength={500}
                 rows={3}
                 placeholder="예: 지금 쓰는 건 멀쩡한데 신형 색깔이 너무 예뻐서요…"
                 className={`${fieldCls} resize-none`}
               />
+              <span className="mt-1 block text-right font-round text-[10px] text-jj-muted">
+                {reason.length}/500
+              </span>
             </label>
           </fieldset>
       </form>

@@ -4,17 +4,24 @@ import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { Share2, Gavel } from "lucide-react";
+import { Share2, Gavel, Scale, Bookmark } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
 import EmojiThumb from "@/components/common/EmojiThumb";
 import VerdictChip from "@/components/widgets/trials/VerdictChip";
-import { fetchTrial, requestVerdict } from "@/stores/trialsSlice";
-import { guessEmoji, formatWon, tally } from "@/lib/trial";
+import DefenseChat from "@/components/widgets/trials/DefenseChat";
+import { useAuth } from "@/contexts/AuthContext";
+import { fetchTrial, requestVerdict, claimTrial } from "@/stores/trialsSlice";
+import { guessEmoji, formatWon, tally, defenseInfo } from "@/lib/trial";
 
 const JURORS = ["가성비요정", "텅장지킴이", "지름요정", "팩트봇"];
-const JUROR_EMOJI = { 가성비요정: "🐿️", 텅장지킴이: "🧘", 지름요정: "🔥", 팩트봇: "🔮" };
+const JUROR_EMOJI = {
+  가성비요정: "🐿️",
+  텅장지킴이: "🧘",
+  지름요정: "🔥",
+  팩트봇: "🔮",
+};
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -22,6 +29,7 @@ function TrialResult() {
   const router = useRouter();
   const dispatch = useDispatch();
   const id = useSearchParams().get("id");
+  const { isAuthenticated, initialized } = useAuth();
 
   const [phase, setPhase] = useState("loading"); // loading | deliberating | result | error
   const [trial, setTrial] = useState(null);
@@ -63,6 +71,38 @@ function TrialResult() {
     };
   }, [id, dispatch]);
 
+  // 로그인 후 돌아왔을 때, '저장하기'를 눌렀던 이 브라우저에 한해 익명 판례를 자동 귀속.
+  useEffect(() => {
+    if (phase !== "result" || !trial || !initialized) return;
+    if (!isAuthenticated || trial.userId) return;
+    const key = `claim:${trial.id}`;
+    if (typeof window === "undefined" || !sessionStorage.getItem(key)) return;
+    sessionStorage.removeItem(key);
+    dispatch(claimTrial(trial.id))
+      .unwrap()
+      .then((updated) => {
+        setTrial(updated);
+        toast("🔖 이 판례를 내 판례로 저장했어요");
+      })
+      .catch(() => {});
+  }, [phase, trial, isAuthenticated, initialized, dispatch]);
+
+  const saveToAccount = () => {
+    sessionStorage.setItem(`claim:${trial.id}`, "1");
+    const redirect = `/trial/?id=${trial.id}`;
+    router.push(`/login/id?redirect=${encodeURIComponent(redirect)}`);
+  };
+
+  const claimNow = async () => {
+    try {
+      const updated = await dispatch(claimTrial(trial.id)).unwrap();
+      setTrial(updated);
+      toast("🔖 내 판례로 저장했어요");
+    } catch (e) {
+      toast.error(typeof e === "string" ? e : "저장에 실패했어요");
+    }
+  };
+
   if (phase === "loading") {
     return <Layout isLoading headerProps={{ subtitle: "사건 조회 중" }} />;
   }
@@ -98,12 +138,17 @@ function TrialResult() {
               <li
                 key={name}
                 className="flex flex-col items-center gap-1.5 animate-bounce"
-                style={{ animationDelay: `${i * 0.15}s`, animationDuration: "1s" }}
+                style={{
+                  animationDelay: `${i * 0.15}s`,
+                  animationDuration: "1s",
+                }}
               >
                 <span className="grid h-14 w-14 place-items-center rounded-xl border-[2.5px] border-jj-ink bg-jj-paper text-2xl shadow-hard-sm">
                   {JUROR_EMOJI[name]}
                 </span>
-                <small className="font-round text-[9px] text-jj-muted">{name}</small>
+                <small className="font-round text-[9px] text-jj-muted">
+                  {name}
+                </small>
               </li>
             ))}
           </ul>
@@ -113,11 +158,30 @@ function TrialResult() {
     );
   }
 
+  if (phase === "defense") {
+    return (
+      <DefenseChat
+        trial={trial}
+        onUpdate={setTrial}
+        onExit={() => setPhase("result")}
+      />
+    );
+  }
+
   // phase === "result"
   const guilty = trial.verdict === "GUILTY";
   const jury = Array.isArray(trial.jury) ? trial.jury : [];
   const t = tally(jury, trial.verdict);
   const saved = guilty ? formatWon(trial.price) : "0원";
+  const { closed: defenseClosed, inExtension, roundsLeft } = defenseInfo(trial);
+  const usedRounds = trial.defenseRounds ?? 0;
+  const defenseLabel = defenseClosed
+    ? "변론 기록 보기"
+    : inExtension
+      ? `동점 연장전 · ${roundsLeft}회 남음`
+      : usedRounds > 0
+        ? `변론 이어가기 · 남은 ${roundsLeft}회`
+        : "배심원 설득하기";
 
   const onShare = async () => {
     try {
@@ -137,7 +201,9 @@ function TrialResult() {
             guilty ? "bg-jj-red" : "bg-jj-green"
           }`}
         >
-          <span className="font-round text-[11px] tracking-wide opacity-90">최종 판결</span>
+          <span className="font-round text-[11px] tracking-wide opacity-90">
+            최종 판결
+          </span>
           <h1 className="mt-1 font-display text-[28px] leading-tight">
             {guilty ? "유죄 · 사지 마세요" : "무죄 · 사도 돼요"}
           </h1>
@@ -146,11 +212,43 @@ function TrialResult() {
           </div>
         </BrutalCard>
 
+        {/* 익명 판례 저장 유도 (로그인/가입) */}
+        {initialized && !trial.userId && (
+          <BrutalCard
+            shadow="sm"
+            className="flex items-center gap-3 border-jj-violet bg-jj-violet-soft p-3.5"
+          >
+            <Bookmark
+              className="h-5 w-5 flex-none text-jj-violet"
+              strokeWidth={2.5}
+            />
+            <div className="min-w-0 flex-1">
+              <div className="font-display text-[13px]">
+                이 판례, 저장할까요?
+              </div>
+              <div className="mt-0.5 font-round text-[11px] text-jj-muted">
+                {isAuthenticated
+                  ? "내 판례 목록에 남겨둘 수 있어요"
+                  : "로그인하면 이 판례가 사라지지 않고 저장돼요"}
+              </div>
+            </div>
+            <BrutalButton
+              tone="ink"
+              onClick={isAuthenticated ? claimNow : saveToAccount}
+              className="flex-none px-3.5 py-2 text-xs"
+            >
+              {isAuthenticated ? "저장" : "로그인"}
+            </BrutalButton>
+          </BrutalCard>
+        )}
+
         {/* 기소 대상 */}
         <BrutalCard shadow="sm" className="flex items-center gap-3 p-3.5">
           <EmojiThumb size="lg">{guessEmoji(trial.itemName)}</EmojiThumb>
           <div className="min-w-0 flex-1">
-            <div className="truncate font-display text-[15px]">{trial.itemName}</div>
+            <div className="truncate font-display text-[15px]">
+              {trial.itemName}
+            </div>
             {trial.reason && (
               <div className="mt-0.5 truncate font-round text-[11px] text-jj-muted">
                 “{trial.reason}”
@@ -190,33 +288,60 @@ function TrialResult() {
 
         {/* 판결 요지 */}
         <BrutalCard className="bg-jj-ink p-4 text-white">
-          <div className="mb-1.5 font-round text-[11px] text-jj-yellow">📜 판결 요지</div>
+          <div className="mb-1.5 font-round text-[11px] text-jj-yellow">
+            📜 판결 요지
+          </div>
           <p className="text-[13px] leading-relaxed">{trial.summary}</p>
         </BrutalCard>
 
         {/* 통계 */}
         <div className="grid grid-cols-2 gap-3">
           <BrutalCard shadow="sm" className="p-3.5 text-center">
-            <div className="font-round text-[11px] text-jj-muted">예상 후회지수</div>
-            <div className="mt-1 font-display text-3xl text-jj-red">{trial.regretIndex}%</div>
+            <div className="font-round text-[11px] text-jj-muted">
+              예상 후회지수
+            </div>
+            <div className="mt-1 font-display text-3xl text-jj-red">
+              {trial.regretIndex}%
+            </div>
           </BrutalCard>
           <BrutalCard shadow="sm" className="p-3.5 text-center">
             <div className="font-round text-[11px] text-jj-muted">
               {guilty ? "아낀 돈" : "쓴 돈"}
             </div>
-            <div className="mt-1 font-display text-3xl text-jj-green">{saved}</div>
+            <div className="mt-1 font-display text-3xl text-jj-green">
+              {saved}
+            </div>
           </BrutalCard>
         </div>
 
         {/* 액션 */}
         <div className="mt-1 flex flex-col gap-2.5">
+          <BrutalButton
+            tone="ink"
+            onClick={() => setPhase("defense")}
+            className="w-full"
+          >
+            <span className="inline-flex items-center gap-2">
+              <Scale className="h-4 w-4" strokeWidth={2.5} />
+              {defenseLabel}
+            </span>
+          </BrutalButton>
+          {!trial.defenseClosed && (
+            <p className="-mt-1 text-center font-round text-[11px] text-jj-muted">
+              배심원을 설득하면 판결이 뒤집힐 수 있어요
+            </p>
+          )}
           <BrutalButton tone="yellow" onClick={onShare} className="w-full">
             <span className="inline-flex items-center gap-2">
               <Share2 className="h-4 w-4" strokeWidth={2.5} />
               판결 공유하기
             </span>
           </BrutalButton>
-          <BrutalButton tone="ink" onClick={() => router.push("/")} className="w-full">
+          <BrutalButton
+            tone="ink"
+            onClick={() => router.push("/")}
+            className="w-full"
+          >
             <span className="inline-flex items-center gap-2">
               <Gavel className="h-4 w-4" strokeWidth={2.5} />또 기소하기
             </span>
@@ -229,7 +354,9 @@ function TrialResult() {
 
 export default function TrialResultPage() {
   return (
-    <Suspense fallback={<Layout isLoading headerProps={{ subtitle: "사건 조회 중" }} />}>
+    <Suspense
+      fallback={<Layout isLoading headerProps={{ subtitle: "사건 조회 중" }} />}
+    >
       <TrialResult />
     </Suspense>
   );

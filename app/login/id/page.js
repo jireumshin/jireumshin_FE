@@ -18,16 +18,27 @@ export default function IdLoginPage() {
 
   const canSubmit = email.trim() !== "" && password.trim() !== "";
 
+  // 로그인 후 돌아갈 경로 (?redirect=). 익명 판례 저장 흐름 등에서 사용.
+  const redirectAfter = () => {
+    const r = new URLSearchParams(window.location.search).get("redirect");
+    return r || "/";
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!canSubmit || isLoading) return;
     try {
       const user = await login({ email: email.trim(), password });
       toast(`⚖️ ${user.nickname}님, 다시 오셨네요!`);
-      router.replace("/");
+      router.replace(redirectAfter());
     } catch (err) {
       toast.error(typeof err === "string" ? err : "로그인에 실패했어요.");
     }
+  };
+
+  const goSignup = () => {
+    const r = new URLSearchParams(window.location.search).get("redirect");
+    router.push(`/login/signup${r ? `?redirect=${encodeURIComponent(r)}` : ""}`);
   };
 
   return (
@@ -91,7 +102,7 @@ export default function IdLoginPage() {
           <span>·</span>
           <button
             type="button"
-            onClick={() => router.push("/login/signup")}
+            onClick={goSignup}
             className="font-bold text-jj-violet underline underline-offset-2"
           >
             회원가입

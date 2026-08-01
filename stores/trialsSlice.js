@@ -70,6 +70,34 @@ export const requestVerdict = createAsyncThunk(
   },
 );
 
+// 익명으로 기소한 판례를 로그인 유저 본인에게 저장(연결) — 갱신된 사건 반환
+export const claimTrial = createAsyncThunk(
+  "trials/claimTrial",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().post(`/trials/${id}/claim`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
+// 배심원 변론 한 라운드 (판결 후 설득) — 갱신된 사건(게이지·표·메시지) 반환
+export const submitDefense = createAsyncThunk(
+  "trials/submitDefense",
+  async ({ id, message }, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().post(`/trials/${id}/defense`, {
+        message,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
 const initialState = {
   creating: false,
   error: null,
@@ -118,6 +146,17 @@ const trialsSlice = createSlice({
         state.mine = state.mine.map((t) =>
           t.id === updated.id ? updated : t,
         );
+        if (state.current?.id === updated.id) state.current = updated;
+      })
+      .addCase(submitDefense.fulfilled, (state, action) => {
+        const updated = action.payload;
+        if (state.current?.id === updated.id) state.current = updated;
+        state.mine = state.mine.map((t) =>
+          t.id === updated.id ? updated : t,
+        );
+      })
+      .addCase(claimTrial.fulfilled, (state, action) => {
+        const updated = action.payload;
         if (state.current?.id === updated.id) state.current = updated;
       });
   },
