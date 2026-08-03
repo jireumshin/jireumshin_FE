@@ -12,7 +12,7 @@ import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import JuryGaugeBar from "@/components/widgets/trials/JuryGaugeBar";
 import ChatBubble from "@/components/widgets/trials/ChatBubble";
 import { submitDefense } from "@/stores/trialsSlice";
-import { gaugesFor, defenseInfo } from "@/lib/trial";
+import { gaugesFor, defenseInfo, guessEmoji, formatWon } from "@/lib/trial";
 import { cn } from "@/lib/utils";
 
 // 판결 후 배심원을 설득해 표를 뒤집는 변론 챗.
@@ -20,6 +20,7 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
   const dispatch = useDispatch();
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [deltas, setDeltas] = useState(null); // 직전 변론 대비 배심원별 증감
   const threadRef = useRef(null);
 
   const messages = Array.isArray(trial.messages) ? trial.messages : [];
@@ -35,11 +36,18 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
   const onSend = async () => {
     const message = text.trim();
     if (!message || sending || closed) return;
+    // 전송 직전 게이지 스냅샷 → 응답 후 증감 계산용
+    const before = Object.fromEntries(gauges.map((g) => [g.juror, g.gauge]));
     setSending(true);
     try {
       const updated = await dispatch(
         submitDefense({ id: trial.id, message }),
       ).unwrap();
+      const next = {};
+      gaugesFor(updated).forEach((g) => {
+        next[g.juror] = g.gauge - (before[g.juror] ?? g.gauge);
+      });
+      setDeltas(next);
       onUpdate(updated);
       setText("");
     } catch (e) {
@@ -114,7 +122,7 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
           </div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-2">
             {gauges.map((g) => (
-              <JuryGaugeBar key={g.juror} {...g} />
+              <JuryGaugeBar key={g.juror} {...g} delta={deltas?.[g.juror]} />
             ))}
           </div>
           {inExtension && (
@@ -130,6 +138,26 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
           ref={threadRef}
           className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4"
         >
+          {/* 기소 개요 — 어떤 지름을 무슨 사유로 변호 중인지 */}
+          <div className="rounded-xl border-[2.5px] border-jj-ink bg-jj-paper px-3.5 py-3 shadow-hard-sm">
+            <div className="flex items-center gap-2.5">
+              <span className="grid h-9 w-9 flex-none place-items-center rounded-lg border-2 border-jj-ink bg-jj-violet-soft text-lg">
+                {guessEmoji(trial.itemName)}
+              </span>
+              <span className="min-w-0 flex-1 truncate font-display text-[13px]">
+                {trial.itemName}
+              </span>
+              <span className="flex-none font-display text-[12px] text-jj-violet">
+                {formatWon(trial.price)}
+              </span>
+            </div>
+            {trial.reason && (
+              <p className="mt-2 whitespace-pre-wrap border-t-2 border-jj-ink/10 pt-2 font-round text-[11.5px] leading-relaxed text-jj-ink/80">
+                🧾 “{trial.reason}”
+              </p>
+            )}
+          </div>
+
           {/* 안내 */}
           <div className="rounded-xl border-2 border-dashed border-jj-ink/30 bg-jj-paper/60 px-3.5 py-2.5 text-center font-round text-[11px] leading-relaxed text-jj-muted">
             배심원마다 <b className="text-jj-ink">설득 포인트가 달라요.</b> 🐿️는

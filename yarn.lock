@@ -5784,6 +5784,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"html-to-image@npm:^1.11.13":
+  version: 1.11.13
+  resolution: "html-to-image@npm:1.11.13"
+  checksum: 18da77cf6c1e7f821f320dc6941642ee292df136f38c548ecb77aa04718b979df63ba4ea56e53d1939b9dbe8e23ca10c44b55319a885bfe7f5f5023c1b5698fe
+  languageName: node
+  linkType: hard
+
 "http-errors@npm:^2.0.0, http-errors@npm:^2.0.1, http-errors@npm:~2.0.1":
   version: 2.0.1
   resolution: "http-errors@npm:2.0.1"
@@ -6319,6 +6326,7 @@ __metadata:
     eslint: ^9
     eslint-config-next: 16.1.2
     framer-motion: ^12.26.2
+    html-to-image: ^1.11.13
     lucide-react: ^0.562.0
     next: 16.1.2
     radix-ui: ^1.6.7

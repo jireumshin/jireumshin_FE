@@ -2,17 +2,30 @@
 
 import { cn } from "@/lib/utils";
 
-// 배심원 1명의 설득 게이지 바.
-export default function JuryGaugeBar({ juror, emoji, gauge, vote }) {
+// 배심원 1명의 설득 게이지 바. delta = 직전 변론 대비 증감(있으면 표시).
+export default function JuryGaugeBar({ juror, emoji, gauge, vote, delta }) {
   const inno = vote === "NOT_GUILTY";
+  const showDelta = typeof delta === "number" && delta !== 0;
   return (
     <div className="flex items-center gap-1.5">
       <span className="text-base leading-none">{emoji}</span>
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between font-round text-[10px] text-jj-ink/70">
           <span className="truncate">{juror}</span>
-          <span className={inno ? "text-jj-green" : "text-jj-red"}>
-            {gauge}
+          <span className="flex items-center gap-1">
+            {showDelta && (
+              <span
+                className={cn(
+                  "font-bold tabular-nums",
+                  delta > 0 ? "text-jj-green" : "text-jj-red",
+                )}
+              >
+                {delta > 0 ? `▲${delta}` : `▼${Math.abs(delta)}`}
+              </span>
+            )}
+            <span className={inno ? "text-jj-green" : "text-jj-red"}>
+              {gauge}
+            </span>
           </span>
         </div>
         {/* 트랙 + 임계(50) 마커 */}

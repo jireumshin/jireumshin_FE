@@ -175,14 +175,7 @@ function TrialResult() {
         ? `변론 이어가기 · 남은 ${roundsLeft}회`
         : "배심원 설득하기";
 
-  const onShare = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      toast("🔗 판결 링크를 복사했어요");
-    } catch {
-      toast.error("링크 복사에 실패했어요");
-    }
-  };
+  const goShare = () => router.push(`/verdict/?id=${trial.id}`);
 
   return (
     <Layout headerProps={{ subtitle: "판결 완료" }}>
@@ -235,21 +228,26 @@ function TrialResult() {
         )}
 
         {/* 기소 대상 */}
-        <BrutalCard shadow="sm" className="flex items-center gap-3 p-3.5">
-          <EmojiThumb size="lg">{guessEmoji(trial.itemName)}</EmojiThumb>
-          <div className="min-w-0 flex-1">
-            <div className="truncate font-display text-[15px]">
+        <BrutalCard shadow="sm" className="p-3.5">
+          <div className="flex items-center gap-3">
+            <EmojiThumb size="lg">{guessEmoji(trial.itemName)}</EmojiThumb>
+            <div className="min-w-0 flex-1 truncate font-display text-[15px]">
               {trial.itemName}
             </div>
-            {trial.reason && (
-              <div className="mt-0.5 truncate font-round text-[11px] text-jj-muted">
-                “{trial.reason}”
+            <div className="flex-none font-display text-sm text-jj-violet">
+              {formatWon(trial.price)}
+            </div>
+          </div>
+          {trial.reason && (
+            <div className="mt-3">
+              <div className="mb-1 font-round text-[10px] text-jj-muted">
+                🧾 기소 사유
               </div>
-            )}
-          </div>
-          <div className="flex-none font-display text-sm text-jj-violet">
-            {formatWon(trial.price)}
-          </div>
+              <p className="whitespace-pre-wrap rounded-xl border-2 border-jj-ink bg-jj-app px-3 py-2 font-round text-[11.5px] leading-relaxed text-jj-ink/80">
+                “{trial.reason}”
+              </p>
+            </div>
+          )}
         </BrutalCard>
 
         {/* 배심원 평결 */}
@@ -323,7 +321,7 @@ function TrialResult() {
               배심원을 설득하면 판결이 뒤집힐 수 있어요
             </p>
           )}
-          <BrutalButton tone="yellow" onClick={onShare} className="w-full">
+          <BrutalButton tone="yellow" onClick={goShare} className="w-full">
             <span className="inline-flex items-center gap-2">
               <Share2 className="h-4 w-4" strokeWidth={2.5} />
               판결 공유하기
