@@ -20,7 +20,7 @@ export default function VerdictChip({
 }) {
   const base = 'border-2 border-jj-ink font-round text-[11px]'
 
-  if (pending || !verdict) {
+  if (pending || (!verdict && !label)) {
     return (
       <Badge className={cn(base, styles.pending, className)}>심리 중</Badge>
     )
@@ -28,11 +28,6 @@ export default function VerdictChip({
 
   const guilty = verdict === 'GUILTY'
   const text = label ?? (jury ? tally(jury, verdict).label : guilty ? '유죄' : '무죄')
-  return (
-    <Badge
-      className={cn(base, guilty ? styles.guilty : styles.innocent, className)}
-    >
-      {text}
-    </Badge>
-  )
+  const style = !verdict ? styles.pending : guilty ? styles.guilty : styles.innocent
+  return <Badge className={cn(base, style, className)}>{text}</Badge>
 }

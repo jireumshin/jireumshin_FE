@@ -104,10 +104,11 @@ export const claimTrial = createAsyncThunk(
 // 배심원 변론 한 라운드 (판결 후 설득) — 갱신된 사건(게이지·표·메시지) 반환
 export const submitDefense = createAsyncThunk(
   "trials/submitDefense",
-  async ({ id, message }, { rejectWithValue }) => {
+  async ({ id, message, target }, { rejectWithValue }) => {
     try {
       const response = await createApiClient().post(`/trials/${id}/defense`, {
         message,
+        ...(target ? { target } : {}),
       });
       return response.data;
     } catch (error) {

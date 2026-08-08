@@ -16,14 +16,13 @@ export default function ProductThumb({
   name = "",
   size = "md",
   className,
-  share = false,
 }) {
   if (imageUrl) {
     return (
       <img
         src={imageUrl}
         alt={name || "상품 사진"}
-        crossOrigin={share ? "anonymous" : undefined}
+        crossOrigin="anonymous"
         className={cn(
           "flex-none border-2 border-jj-ink object-cover",
           sizes[size],

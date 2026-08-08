@@ -155,20 +155,37 @@ function VerdictView() {
         </div>
 
         {/* 기소 사유 전문 — 배심원 판결이 타당한지 판단하는 근거 */}
-        {trial.reason && (
+        {trial.mode === "VERSUS" ? (
+          <BrutalCard className="w-full space-y-3 p-4">
+            <div className="font-round text-[11px] text-jj-muted">🧾 기소 사유</div>
+            {[
+              { b: "🅰", name: trial.itemName, r: trial.reason },
+              { b: "🅱", name: trial.itemNameB, r: trial.reasonB },
+            ].map((x) => (
+              <div key={x.b}>
+                <div className="font-display text-[12px]">
+                  {x.b} {x.name}
+                </div>
+                <p className="mt-0.5 whitespace-pre-wrap font-round text-[12px] leading-relaxed text-jj-ink/80">
+                  “{x.r}”
+                </p>
+              </div>
+            ))}
+          </BrutalCard>
+        ) : trial.reason ? (
           <BrutalCard className="w-full p-4">
-            <div className="mb-1.5 font-round text-[11px] text-jj-muted">
-              🧾 기소 사유
-            </div>
+            <div className="mb-1.5 font-round text-[11px] text-jj-muted">🧾 기소 사유</div>
             <p className="whitespace-pre-wrap font-round text-[12px] leading-relaxed text-jj-ink/80">
               “{trial.reason}”
             </p>
           </BrutalCard>
-        )}
+        ) : null}
 
         {/* 배심원 평결 상세 */}
         <BrutalCard className="w-full p-4">
-          <div className="mb-3 font-display text-sm">⚖ 배심원 평결</div>
+          <div className="mb-3 font-display text-sm">
+            {trial.mode === "VERSUS" ? "⚖ 배심원 비교" : "⚖ 배심원 평결"}
+          </div>
           <ul className="flex flex-col gap-2.5">
             {jury.map((j) => (
               <li key={j.juror} className="flex items-start gap-2.5">
@@ -178,10 +195,14 @@ function VerdictView() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <span className="font-display text-[13px]">{j.juror}</span>
-                    <VerdictChip
-                      verdict={j.vote}
-                      className="px-1.5 py-0 text-[9px]"
-                    />
+                    {trial.mode === "VERSUS" ? (
+                      <span className="font-round text-[10px] text-jj-muted">
+                        A <b className={j.scoreA >= j.scoreB ? "text-jj-green" : "text-jj-ink"}>{j.scoreA}</b>
+                        {" · "}B <b className={j.scoreB > j.scoreA ? "text-jj-green" : "text-jj-ink"}>{j.scoreB}</b>
+                      </span>
+                    ) : (
+                      <VerdictChip verdict={j.vote} className="px-1.5 py-0 text-[9px]" />
+                    )}
                   </div>
                   <p className="mt-0.5 font-round text-[11px] leading-relaxed text-jj-ink/80">
                     {j.argument}

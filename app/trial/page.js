@@ -12,6 +12,7 @@ import EmojiThumb from "@/components/common/EmojiThumb";
 import ProductThumb from "@/components/common/ProductThumb";
 import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import DefenseChat from "@/components/widgets/trials/DefenseChat";
+import VersusResult from "@/components/widgets/trials/VersusResult";
 import { useAuth } from "@/contexts/AuthContext";
 import { selectors } from "@/stores";
 import { fetchTrial, requestVerdict, claimTrial } from "@/stores/trialsSlice";
@@ -118,9 +119,19 @@ function TrialResult() {
             ⚖ 배심원단이 심리 중…
           </p>
           <h1 className="font-display text-xl leading-snug">
-            {trial?.itemName}, 살까 말까
-            <br />
-            배심원 4명이 갑론을박 중이에요
+            {trial?.mode === "VERSUS" ? (
+              <>
+                {trial?.itemName} vs {trial?.itemNameB}
+                <br />
+                배심원 4명이 저울질 중이에요
+              </>
+            ) : (
+              <>
+                {trial?.itemName}, 살까 말까
+                <br />
+                배심원 4명이 갑론을박 중이에요
+              </>
+            )}
           </h1>
           <ul className="flex gap-3">
             {JURORS.map((name, i) => (
@@ -158,6 +169,10 @@ function TrialResult() {
   }
 
   // phase === "result"
+  if (trial.mode === "VERSUS") {
+    return <VersusResult trial={trial} onUpdate={setTrial} />;
+  }
+
   const guilty = trial.verdict === "GUILTY";
   const jury = Array.isArray(trial.jury) ? trial.jury : [];
   const t = tally(jury, trial.verdict);
