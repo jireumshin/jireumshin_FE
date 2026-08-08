@@ -173,7 +173,7 @@ function TrialResult() {
       ? `동점 연장전 · ${roundsLeft}회 남음`
       : usedRounds > 0
         ? `변론 이어가기 · 남은 ${roundsLeft}회`
-        : "배심원 설득하기";
+        : "배심원에게 변론하기";
 
   const goShare = () => router.push(`/verdict/?id=${trial.id}`);
 
@@ -318,7 +318,7 @@ function TrialResult() {
           </BrutalButton>
           {!trial.defenseClosed && (
             <p className="-mt-1 text-center font-round text-[11px] text-jj-muted">
-              배심원을 설득하면 판결이 뒤집힐 수 있어요
+              못다 한 사정을 솔직히 털어놓으면 판결이 달라질 수 있어요
             </p>
           )}
           <BrutalButton tone="yellow" onClick={goShare} className="w-full">

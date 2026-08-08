@@ -82,7 +82,7 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
         rows={1}
         maxLength={500}
         disabled={sending}
-        placeholder="배심원을 설득할 변론을 적어보세요"
+        placeholder="못다 한 사정을 솔직히 적어보세요"
         className="max-h-28 min-h-11 flex-1 resize-none rounded-xl border-[2.5px] border-jj-ink bg-jj-paper font-round text-[13px] shadow-hard-sm focus-visible:ring-0"
       />
       <BrutalButton
@@ -113,7 +113,7 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
         {/* 게이지 헤더 (고정) */}
         <div className="shrink-0 border-b-2 border-jj-ink/15 bg-jj-paper px-4 py-3">
           <div className="mb-2 flex items-center justify-between">
-            <span className="font-display text-xs">⚖ 배심원 설득 현황</span>
+            <span className="font-display text-xs">⚖ 배심원 심증 현황</span>
             <VerdictChip
               verdict={trial.verdict}
               jury={trial.jury}
@@ -160,8 +160,9 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
 
           {/* 안내 */}
           <div className="rounded-xl border-2 border-dashed border-jj-ink/30 bg-jj-paper/60 px-3.5 py-2.5 text-center font-round text-[11px] leading-relaxed text-jj-muted">
-            배심원마다 <b className="text-jj-ink">설득 포인트가 달라요.</b> 🐿️는
-            숫자·계산, 🧘는 진짜 필요, 🔥는 감정, 🔮는 새로운 정보에 흔들려요.
+            배심원마다 <b className="text-jj-ink">마음이 움직이는 지점이 달라요.</b>{" "}
+            🐿️는 숫자·계산, 🧘는 감당·필요, 🔥는 감정, 🔮는 새로운 정보에
+            움직여요.
           </div>
 
           {messages.map((m) => (
