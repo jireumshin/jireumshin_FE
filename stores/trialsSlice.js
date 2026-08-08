@@ -15,6 +15,24 @@ export const createTrial = createAsyncThunk(
   },
 );
 
+// 상품 이미지 업로드 (BE 경유 S3) — imageUrl 반환. 기소 제출 전에 호출.
+export const uploadTrialImage = createAsyncThunk(
+  "trials/uploadImage",
+  async (file, { rejectWithValue }) => {
+    try {
+      const form = new FormData();
+      form.append("file", file);
+
+      const response = await createApiClient().post("/uploads/image", form, {
+        headers: { "Content-Type": undefined },
+      });
+      return response.data.imageUrl;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
 // 사건 단건 조회 (결과 화면 진입·공유 링크)
 export const fetchTrial = createAsyncThunk(
   "trials/fetchTrial",
@@ -143,17 +161,13 @@ const trialsSlice = createSlice({
       })
       .addCase(submitFollowUp.fulfilled, (state, action) => {
         const updated = action.payload;
-        state.mine = state.mine.map((t) =>
-          t.id === updated.id ? updated : t,
-        );
+        state.mine = state.mine.map((t) => (t.id === updated.id ? updated : t));
         if (state.current?.id === updated.id) state.current = updated;
       })
       .addCase(submitDefense.fulfilled, (state, action) => {
         const updated = action.payload;
         if (state.current?.id === updated.id) state.current = updated;
-        state.mine = state.mine.map((t) =>
-          t.id === updated.id ? updated : t,
-        );
+        state.mine = state.mine.map((t) => (t.id === updated.id ? updated : t));
       })
       .addCase(claimTrial.fulfilled, (state, action) => {
         const updated = action.payload;

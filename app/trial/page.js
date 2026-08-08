@@ -9,12 +9,13 @@ import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
 import EmojiThumb from "@/components/common/EmojiThumb";
+import ProductThumb from "@/components/common/ProductThumb";
 import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import DefenseChat from "@/components/widgets/trials/DefenseChat";
 import { useAuth } from "@/contexts/AuthContext";
 import { selectors } from "@/stores";
 import { fetchTrial, requestVerdict, claimTrial } from "@/stores/trialsSlice";
-import { guessEmoji, formatWon, tally, defenseInfo } from "@/lib/trial";
+import { formatWon, tally, defenseInfo } from "@/lib/trial";
 
 const JURORS = ["가성비요정", "텅장지킴이", "지름요정", "팩트봇"];
 const JUROR_EMOJI = {
@@ -163,8 +164,7 @@ function TrialResult() {
   const saved = guilty ? formatWon(trial.price) : "0원";
   // 전역 claim이 store(current)를 갱신하면 CTA가 사라지도록 store 기준도 함께 본다
   const owned =
-    !!trial.userId ||
-    (currentTrial?.id === trial.id && !!currentTrial?.userId);
+    !!trial.userId || (currentTrial?.id === trial.id && !!currentTrial?.userId);
   const { closed: defenseClosed, inExtension, roundsLeft } = defenseInfo(trial);
   const usedRounds = trial.defenseRounds ?? 0;
   const defenseLabel = defenseClosed
@@ -230,7 +230,11 @@ function TrialResult() {
         {/* 기소 대상 */}
         <BrutalCard shadow="sm" className="p-3.5">
           <div className="flex items-center gap-3">
-            <EmojiThumb size="lg">{guessEmoji(trial.itemName)}</EmojiThumb>
+            <ProductThumb
+              imageUrl={trial.imageUrl}
+              name={trial.itemName}
+              size="lg"
+            />
             <div className="min-w-0 flex-1 truncate font-display text-[15px]">
               {trial.itemName}
             </div>

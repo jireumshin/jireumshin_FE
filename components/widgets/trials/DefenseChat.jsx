@@ -11,9 +11,9 @@ import { Textarea } from "@/components/ui/textarea";
 import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import JuryGaugeBar from "@/components/widgets/trials/JuryGaugeBar";
 import ChatBubble from "@/components/widgets/trials/ChatBubble";
+import ProductThumb from "@/components/common/ProductThumb";
 import { submitDefense } from "@/stores/trialsSlice";
-import { gaugesFor, defenseInfo, guessEmoji, formatWon } from "@/lib/trial";
-import { cn } from "@/lib/utils";
+import { gaugesFor, defenseInfo, formatWon } from "@/lib/trial";
 
 // 판결 후 배심원을 설득해 표를 뒤집는 변론 챗.
 export default function DefenseChat({ trial, onUpdate, onExit }) {
@@ -141,9 +141,11 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
           {/* 기소 개요 — 어떤 지름을 무슨 사유로 변호 중인지 */}
           <div className="rounded-xl border-[2.5px] border-jj-ink bg-jj-paper px-3.5 py-3 shadow-hard-sm">
             <div className="flex items-center gap-2.5">
-              <span className="grid h-9 w-9 flex-none place-items-center rounded-lg border-2 border-jj-ink bg-jj-violet-soft text-lg">
-                {guessEmoji(trial.itemName)}
-              </span>
+              <ProductThumb
+                imageUrl={trial.imageUrl}
+                name={trial.itemName}
+                size="sm"
+              />
               <span className="min-w-0 flex-1 truncate font-display text-[13px]">
                 {trial.itemName}
               </span>

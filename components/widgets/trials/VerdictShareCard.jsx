@@ -1,7 +1,8 @@
 "use client";
 
 import { forwardRef } from "react";
-import { guessEmoji, formatWon, tally } from "@/lib/trial";
+import ProductThumb from "@/components/common/ProductThumb";
+import { formatWon, tally } from "@/lib/trial";
 
 const VerdictShareCard = forwardRef(function VerdictShareCard({ trial }, ref) {
   const guilty = trial.verdict === "GUILTY";
@@ -42,9 +43,12 @@ const VerdictShareCard = forwardRef(function VerdictShareCard({ trial }, ref) {
 
       {/* 기소 대상 */}
       <div className="flex items-center gap-3 border-b-[2.5px] border-jj-ink px-4 py-3">
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border-[2.5px] border-jj-ink bg-jj-violet-soft text-xl">
-          {guessEmoji(trial.itemName)}
-        </span>
+        <ProductThumb
+          imageUrl={trial.imageUrl}
+          name={trial.itemName}
+          size="md"
+          share
+        />
         <div className="min-w-0 flex-1">
           <div className="truncate font-display text-[15px] text-jj-ink">
             {trial.itemName}
