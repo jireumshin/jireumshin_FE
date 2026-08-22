@@ -117,6 +117,59 @@ export const submitDefense = createAsyncThunk(
   },
 );
 
+// 공개된 판례 피드
+export const fetchFeed = createAsyncThunk(
+  "trials/fetchFeed",
+  async (cursor, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().get("/trials/feed", {
+        params: cursor ? { cursor } : {},
+      });
+      return { ...response.data, append: !!cursor };
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
+// 공감 토글 (로그인 필요)
+export const toggleLike = createAsyncThunk(
+  "trials/toggleLike",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().post(`/trials/${id}/like`);
+      return { id, ...response.data };
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
+// 내 판례를 피드에 공개 / 공개 취소 — 갱신된 사건 반환
+export const publishTrial = createAsyncThunk(
+  "trials/publishTrial",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().post(`/trials/${id}/publish`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
+export const unpublishTrial = createAsyncThunk(
+  "trials/unpublishTrial",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().delete(`/trials/${id}/publish`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
 const initialState = {
   creating: false,
   error: null,
@@ -124,6 +177,10 @@ const initialState = {
   current: null, // 결과 화면에서 보는 사건
   mine: [], // 내 판례 목록
   mineLoading: false,
+  feed: [], // 공개 판례 피드
+  feedCursor: null, // 다음 페이지 커서 (null = 더 없음)
+  feedLoading: false,
+  feedLoaded: false,
 };
 
 const trialsSlice = createSlice({
@@ -172,6 +229,36 @@ const trialsSlice = createSlice({
       })
       .addCase(claimTrial.fulfilled, (state, action) => {
         const updated = action.payload;
+        if (state.current?.id === updated.id) state.current = updated;
+      })
+      .addCase(fetchFeed.pending, (state) => {
+        state.feedLoading = true;
+      })
+      .addCase(fetchFeed.fulfilled, (state, action) => {
+        const { items, nextCursor, append } = action.payload;
+        state.feedLoading = false;
+        state.feedLoaded = true;
+        state.feed = append ? [...state.feed, ...items] : items;
+        state.feedCursor = nextCursor;
+      })
+      .addCase(fetchFeed.rejected, (state) => {
+        state.feedLoading = false;
+      })
+      .addCase(toggleLike.fulfilled, (state, action) => {
+        const { id, liked, likeCount } = action.payload;
+        const apply = (t) =>
+          t && t.id === id ? { ...t, liked, likedByMe: liked, likeCount } : t;
+        state.feed = state.feed.map(apply);
+        if (state.current?.id === id) state.current = apply(state.current);
+      })
+      .addCase(publishTrial.fulfilled, (state, action) => {
+        const updated = action.payload;
+        state.mine = state.mine.map((t) => (t.id === updated.id ? updated : t));
+        if (state.current?.id === updated.id) state.current = updated;
+      })
+      .addCase(unpublishTrial.fulfilled, (state, action) => {
+        const updated = action.payload;
+        state.mine = state.mine.map((t) => (t.id === updated.id ? updated : t));
         if (state.current?.id === updated.id) state.current = updated;
       });
   },

@@ -4,18 +4,23 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
-import { X, Gavel, Clock } from "lucide-react";
+import { Gavel, Clock, Globe, Heart } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
-import BrutalIconButton from "@/components/common/BrutalIconButton";
 import StatBar from "@/components/common/StatBar";
 import EmojiThumb from "@/components/common/EmojiThumb";
 import TrialListItem from "@/components/widgets/trials/TrialListItem";
-import { fetchMyTrials, submitFollowUp } from "@/stores/trialsSlice";
+import {
+  fetchMyTrials,
+  submitFollowUp,
+  publishTrial,
+  unpublishTrial,
+} from "@/stores/trialsSlice";
 import { selectors } from "@/stores";
 import { useAuth } from "@/contexts/AuthContext";
 import { guessEmoji, formatWon } from "@/lib/trial";
+import { cn } from "@/lib/utils";
 
 // 판결났고, 재질문 시점이 지났고, 아직 응답 안 한 사건
 function isDue(t) {
@@ -64,12 +69,6 @@ export default function RecordsPage() {
     return <Layout isLoading headerProps={{ subtitle: "나의 판례" }} />;
   }
 
-  const closeBtn = (
-    <BrutalIconButton aria-label="닫기" onClick={() => router.push("/")}>
-      <X className="h-4 w-4" strokeWidth={2.5} />
-    </BrutalIconButton>
-  );
-
   const { guiltyRate, notGuiltyRate, saved, answeredCount, regretRate } =
     summarize(trials);
   const dueFollowUps = trials.filter(isDue);
@@ -84,8 +83,26 @@ export default function RecordsPage() {
     }
   };
 
+  const [pubBusyId, setPubBusyId] = useState(null);
+  const onTogglePublish = async (t) => {
+    setPubBusyId(t.id);
+    try {
+      if (t.isPublic) {
+        await dispatch(unpublishTrial(t.id)).unwrap();
+        toast("피드에서 내렸어요");
+      } else {
+        await dispatch(publishTrial(t.id)).unwrap();
+        toast("🌐 피드에 공개했어요");
+      }
+    } catch (e) {
+      toast.error(typeof e === "string" ? e : "변경에 실패했어요");
+    } finally {
+      setPubBusyId(null);
+    }
+  };
+
   return (
-    <Layout headerProps={{ subtitle: "나의 판례", right: closeBtn }} allowScroll>
+    <Layout headerProps={{ subtitle: "나의 판례" }} allowScroll activeTab="records">
       <section className="flex flex-col gap-3 px-5 pb-10 pt-6">
         <header className="mb-1">
           <h1 className="font-display text-2xl leading-tight">
@@ -161,17 +178,49 @@ export default function RecordsPage() {
 
             <div className="flex flex-col gap-2.5">
               {trials.map((t) => (
-                <TrialListItem
-                  key={t.id}
-                  trial={t}
-                  onClick={() => router.push(`/trial/?id=${t.id}`)}
-                />
+                <div key={t.id} className="flex flex-col gap-1.5">
+                  <TrialListItem
+                    trial={t}
+                    onClick={() => router.push(`/trial/?id=${t.id}`)}
+                  />
+                  {t.status === "JUDGED" && (
+                    <PublishToggle
+                      trial={t}
+                      busy={pubBusyId === t.id}
+                      onToggle={() => onTogglePublish(t)}
+                    />
+                  )}
+                </div>
               ))}
             </div>
           </>
         )}
       </section>
     </Layout>
+  );
+}
+
+function PublishToggle({ trial, busy, onToggle }) {
+  const pub = trial.isPublic;
+  return (
+    <button
+      type="button"
+      disabled={busy}
+      onClick={onToggle}
+      className={cn(
+        "ml-1 flex items-center gap-1.5 self-start rounded-full border border-jj-line px-2.5 py-1 font-round text-[11px] shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-50",
+        pub ? "bg-jj-green-soft text-jj-green" : "bg-jj-app text-jj-muted",
+      )}
+    >
+      <Globe className="h-3 w-3" strokeWidth={2.5} />
+      {pub ? "피드 공개중" : "피드에 공개"}
+      {pub && trial.likeCount > 0 && (
+        <span className="inline-flex items-center gap-0.5">
+          · <Heart className="h-3 w-3" strokeWidth={2.5} fill="currentColor" />
+          {trial.likeCount}
+        </span>
+      )}
+    </button>
   );
 }
 
@@ -252,7 +301,7 @@ function ChoiceButton({ tone, children, ...props }) {
   return (
     <button
       type="button"
-      className={`rounded-lg border-2 border-jj-ink px-2 py-2.5 font-round text-[12px] shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-40 ${toneCls}`}
+      className={`rounded-lg border border-jj-line px-2 py-2.5 font-round text-[12px] shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-40 ${toneCls}`}
       {...props}
     >
       {children}
@@ -263,7 +312,7 @@ function ChoiceButton({ tone, children, ...props }) {
 function EmptyState({ onStart }) {
   return (
     <BrutalCard className="mt-6 flex flex-col items-center gap-4 px-6 py-10 text-center">
-      <span className="grid h-16 w-16 place-items-center rounded-2xl border-[2.5px] border-jj-ink bg-jj-violet-soft text-3xl shadow-hard-sm">
+      <span className="grid h-16 w-16 place-items-center rounded-2xl border border-jj-line bg-jj-violet-soft text-3xl shadow-hard-sm">
         <Gavel className="h-8 w-8" strokeWidth={2} />
       </span>
       <div>

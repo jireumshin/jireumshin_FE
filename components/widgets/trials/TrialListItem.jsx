@@ -23,7 +23,7 @@ export default function TrialListItem({ trial, onClick, className }) {
       type="button"
       onClick={onClick}
       className={cn(
-        'flex items-center gap-3 rounded-[15px] border-[2.5px] border-jj-ink bg-jj-paper p-3 text-left shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none',
+        'flex items-center gap-3 rounded-[15px] border border-jj-line bg-jj-paper p-3 text-left shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none',
         className,
       )}
     >

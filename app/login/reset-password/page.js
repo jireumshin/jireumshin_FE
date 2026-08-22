@@ -74,7 +74,7 @@ function ResetPasswordForm() {
         </p>
       </header>
 
-      <fieldset className="min-w-0 space-y-4 rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-4 shadow-hard">
+      <fieldset className="min-w-0 space-y-4 rounded-2xl border border-jj-line bg-jj-paper p-4 shadow-hard">
         <label className="block">
           <span className="mb-2 block font-display text-sm">새 비밀번호</span>
           <Input

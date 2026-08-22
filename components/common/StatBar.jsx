@@ -30,7 +30,7 @@ export default function StatBar({ label, value, tone = 'violet', className }) {
       </p>
       <Progress
         value={value}
-        className={cn('mt-2.5 h-2 border-2 border-jj-ink bg-white', t.ind)}
+        className={cn('mt-2.5 h-2 border border-jj-line bg-white', t.ind)}
       />
     </BrutalCard>
   )

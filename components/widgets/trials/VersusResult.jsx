@@ -79,7 +79,7 @@ export default function VersusResult({ trial, onUpdate }) {
         <BrutalCard className={cn('p-5 text-center text-white', banner.bg)}>
           <span className="font-round text-[11px] tracking-wide opacity-90">최종 판결</span>
           <h1 className="mt-1 truncate font-display text-[26px] leading-tight">{banner.title}</h1>
-          <div className="mt-2 inline-block rounded-full border-2 border-jj-ink bg-jj-ink/20 px-3 py-0.5 font-round text-xs">
+          <div className="mt-2 inline-block rounded-full border border-jj-line bg-jj-ink/20 px-3 py-0.5 font-round text-xs">
             {banner.sub}
           </div>
         </BrutalCard>
@@ -138,7 +138,7 @@ export default function VersusResult({ trial, onUpdate }) {
           <ul className="flex flex-col gap-3">
             {jurors.map((j) => (
               <li key={j.juror} className="flex items-start gap-2.5">
-                <span className="grid h-9 w-9 flex-none place-items-center rounded-lg border-2 border-jj-ink bg-jj-app text-lg">
+                <span className="grid h-9 w-9 flex-none place-items-center rounded-lg border border-jj-line bg-jj-app text-lg">
                   {j.emoji}
                 </span>
                 <div className="min-w-0 flex-1">
@@ -213,11 +213,11 @@ function CandidateCard({ badge, name, price, imageUrl, win, dim }) {
       )}
     >
       <div className="flex w-full items-center justify-between">
-        <span className="grid h-6 w-6 place-items-center rounded-md border-2 border-jj-ink bg-jj-paper font-display text-[11px]">
+        <span className="grid h-6 w-6 place-items-center rounded-md border border-jj-line bg-jj-paper font-display text-[11px]">
           {badge}
         </span>
         {win && (
-          <span className="rounded-full border-2 border-jj-ink bg-jj-green px-2 py-0.5 font-round text-[9px] text-white">
+          <span className="rounded-full border border-jj-line bg-jj-green px-2 py-0.5 font-round text-[9px] text-white">
             👑 승
           </span>
         )}
@@ -234,7 +234,7 @@ function CandidateCard({ badge, name, price, imageUrl, win, dim }) {
 function ScaleBar({ label, name, value, win }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="grid h-5 w-5 flex-none place-items-center rounded border-2 border-jj-ink bg-jj-paper font-display text-[10px]">
+      <span className="grid h-5 w-5 flex-none place-items-center rounded border border-jj-line bg-jj-paper font-display text-[10px]">
         {label}
       </span>
       <div className="min-w-0 flex-1">
@@ -242,7 +242,7 @@ function ScaleBar({ label, name, value, win }) {
           <span className="truncate">{name}</span>
           <span className={win ? 'text-jj-green' : 'text-jj-ink'}>{value}</span>
         </div>
-        <div className="relative mt-0.5 h-2.5 w-full overflow-hidden rounded-full border-2 border-jj-ink bg-jj-app">
+        <div className="relative mt-0.5 h-2.5 w-full overflow-hidden rounded-full border border-jj-line bg-jj-app">
           <div
             className={cn('h-full transition-all duration-700 ease-out', win ? 'bg-jj-green' : 'bg-jj-red')}
             style={{ width: `${value}%` }}

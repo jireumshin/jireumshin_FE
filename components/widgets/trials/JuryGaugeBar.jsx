@@ -29,7 +29,7 @@ export default function JuryGaugeBar({ juror, emoji, gauge, vote, delta }) {
           </span>
         </div>
         {/* 트랙 + 임계(50) 마커 */}
-        <div className="relative mt-0.5 h-2.5 w-full overflow-hidden rounded-full border-2 border-jj-ink bg-jj-app">
+        <div className="relative mt-0.5 h-2.5 w-full overflow-hidden rounded-full border border-jj-line bg-jj-app">
           <div
             className={cn(
               "h-full transition-all duration-700 ease-out",

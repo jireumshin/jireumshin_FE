@@ -22,7 +22,7 @@ export default function CandidateFields({
   onRemove,
 }) {
   return (
-    <fieldset className="min-w-0 space-y-4 rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-4 shadow-hard">
+    <fieldset className="min-w-0 space-y-4 rounded-2xl border border-jj-line bg-jj-paper p-4 shadow-hard">
       {title && (
         <div className="flex items-center justify-between">
           <span className="font-display text-sm">{title}</span>
@@ -39,19 +39,19 @@ export default function CandidateFields({
       )}
 
       {image ? (
-        <figure className="relative m-0 aspect-3/2 w-full overflow-hidden rounded-xl border-[2.5px] border-jj-ink shadow-hard-sm">
+        <figure className="relative m-0 aspect-3/2 w-full overflow-hidden rounded-xl border border-jj-line shadow-hard-sm">
           <img src={image.url} alt="상품 사진" className="h-full w-full object-cover" />
           <button
             type="button"
             onClick={onRemoveImage}
             aria-label="사진 삭제"
-            className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full border-2 border-jj-ink bg-jj-red font-display text-sm text-white shadow-hard-sm"
+            className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full border border-jj-line bg-jj-red font-display text-sm text-white shadow-hard-sm"
           >
             ✕
           </button>
         </figure>
       ) : (
-        <label className="flex h-16 cursor-pointer items-center justify-center gap-2 rounded-xl border-[2.5px] border-dashed border-jj-ink bg-jj-app font-display text-sm text-jj-muted">
+        <label className="flex h-16 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-jj-line bg-jj-app font-display text-sm text-jj-muted">
           📷 상품 사진 <span className="font-round text-xs font-normal">(선택)</span>
           <input
             type="file"

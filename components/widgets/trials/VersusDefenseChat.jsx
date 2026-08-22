@@ -78,7 +78,7 @@ export default function VersusDefenseChat({ trial, onUpdate, onExit }) {
         maxLength={500}
         disabled={sending}
         placeholder="용도·상황을 더 얘기해보세요…"
-        className="max-h-28 min-h-11 flex-1 resize-none rounded-xl border-[2.5px] border-jj-ink bg-jj-paper font-round text-[13px] shadow-hard-sm focus-visible:ring-0"
+        className="max-h-28 min-h-11 flex-1 resize-none rounded-xl border border-jj-line bg-jj-paper font-round text-[13px] shadow-hard-sm focus-visible:ring-0"
       />
       <BrutalButton
         tone="yellow"
@@ -136,7 +136,7 @@ export default function VersusDefenseChat({ trial, onUpdate, onExit }) {
           )}
 
           {closed && !sending && (
-            <div className="mt-1 rounded-xl border-[2.5px] border-jj-ink bg-jj-ink px-4 py-3 text-center text-white">
+            <div className="mt-1 rounded-xl border border-jj-line bg-jj-ink px-4 py-3 text-center text-white">
               <div className="font-display text-sm">⚖ 변론 종료 · 판결이 확정됐어요</div>
             </div>
           )}
@@ -149,7 +149,7 @@ export default function VersusDefenseChat({ trial, onUpdate, onExit }) {
 function ScaleRow({ label, name, value, lead }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="grid h-5 w-5 flex-none place-items-center rounded border-2 border-jj-ink bg-jj-paper font-display text-[10px]">
+      <span className="grid h-5 w-5 flex-none place-items-center rounded border border-jj-line bg-jj-paper font-display text-[10px]">
         {label}
       </span>
       <div className="min-w-0 flex-1">
@@ -157,7 +157,7 @@ function ScaleRow({ label, name, value, lead }) {
           <span className="truncate">{name}</span>
           <span className={lead ? 'text-jj-green' : 'text-jj-ink'}>{value}</span>
         </div>
-        <div className="relative mt-0.5 h-2.5 w-full overflow-hidden rounded-full border-2 border-jj-ink bg-jj-app">
+        <div className="relative mt-0.5 h-2.5 w-full overflow-hidden rounded-full border border-jj-line bg-jj-app">
           <div
             className={cn('h-full transition-all duration-700 ease-out', lead ? 'bg-jj-green' : 'bg-jj-red')}
             style={{ width: `${value}%` }}

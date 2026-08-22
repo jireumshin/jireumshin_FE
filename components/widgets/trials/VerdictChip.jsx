@@ -18,7 +18,7 @@ export default function VerdictChip({
   label,
   className,
 }) {
-  const base = 'border-2 border-jj-ink font-round text-[11px]'
+  const base = 'border border-jj-line font-round text-[11px]'
 
   if (pending || (!verdict && !label)) {
     return (

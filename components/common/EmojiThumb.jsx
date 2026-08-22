@@ -13,7 +13,7 @@ export default function EmojiThumb({ children, size = 'md', className }) {
   return (
     <span
       className={cn(
-        'grid flex-none place-items-center border-2 border-jj-ink bg-jj-violet-soft',
+        'grid flex-none place-items-center border border-jj-line bg-jj-violet-soft',
         sizes[size],
         className,
       )}

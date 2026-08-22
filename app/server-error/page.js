@@ -26,7 +26,7 @@ export default function ServerErrorPage() {
   return (
     <Layout showHeader={false} noScroll>
       <div className="flex h-full flex-col items-center justify-center gap-6 px-8 text-center">
-        <span className="grid h-24 w-24 -rotate-3 place-items-center rounded-2xl border-[2.5px] border-jj-ink bg-jj-red text-white shadow-hard">
+        <span className="grid h-24 w-24 -rotate-3 place-items-center rounded-2xl border border-jj-line bg-jj-red text-white shadow-hard">
           <ServerCrash className="h-12 w-12" />
         </span>
 

@@ -15,7 +15,7 @@ export default function BrutalCard({ className, shadow = 'hard', ...props }) {
   return (
     <Card
       className={cn(
-        'rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper text-jj-ink',
+        'rounded-2xl border border-jj-line bg-jj-paper text-jj-ink',
         shadows[shadow],
         className,
       )}

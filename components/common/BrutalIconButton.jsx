@@ -30,7 +30,7 @@ export default function BrutalIconButton({
     <Button
       size="icon"
       className={cn(
-        'border-[2.5px] border-jj-ink shadow-hard-sm',
+        'border border-jj-line shadow-hard-sm',
         'transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:opacity-40',
         sizes[size],
         tones[tone],

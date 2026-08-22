@@ -71,14 +71,8 @@ export default function MyPage() {
     router.replace("/");
   };
 
-  const closeBtn = (
-    <BrutalIconButton aria-label="닫기" onClick={() => router.push("/")}>
-      <X className="h-4 w-4" strokeWidth={2.5} />
-    </BrutalIconButton>
-  );
-
   return (
-    <Layout headerProps={{ subtitle: "마이페이지", right: closeBtn }}>
+    <Layout headerProps={{ subtitle: "마이페이지" }} activeTab="mypage" allowScroll>
       <section className="flex flex-col gap-5 px-5 pb-8 pt-7">
         <header className="text-center">
           <EmojiThumb className="mx-auto h-20 w-20 rounded-2xl border-[2.5px] text-4xl shadow-hard">
@@ -88,7 +82,7 @@ export default function MyPage() {
             {user.nickname}
           </h1>
           <Badge
-            className={`mt-2 border-2 border-jj-ink px-3 py-0.5 font-round text-[11px] shadow-hard-sm ${
+            className={`mt-2 border border-jj-line px-3 py-0.5 font-round text-[11px] shadow-hard-sm ${
               isKakao ? "bg-[#FEE500] text-[#3c1e1e]" : "bg-jj-violet text-white"
             }`}
           >
@@ -173,9 +167,9 @@ export default function MyPage() {
         <button
           type="button"
           onClick={() => router.push("/records")}
-          className="flex items-center gap-3 rounded-2xl border-[2.5px] border-jj-ink bg-jj-violet p-4 text-left text-white shadow-hard transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none"
+          className="flex items-center gap-3 rounded-2xl border border-jj-line bg-jj-violet p-4 text-left text-white shadow-hard transition-transform active:translate-x-1 active:translate-y-1 active:shadow-none"
         >
-          <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border-2 border-jj-ink bg-white text-jj-ink">
+          <span className="grid h-10 w-10 flex-none place-items-center rounded-xl border border-jj-line bg-white text-jj-ink">
             <Gavel className="h-5 w-5" strokeWidth={2.2} />
           </span>
           <span className="flex-1">

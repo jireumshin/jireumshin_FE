@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Header from "./Header";
 import Loading from "./Loading";
+import BottomTabBar from "./BottomTabBar";
 
 export default function Layout({
   children,
@@ -11,6 +12,7 @@ export default function Layout({
   headerProps = {},
   showBottomNavigation = false,
   bottomNavigation = null,
+  activeTab = null, // "home" | "feed" | "records" → 글로벌 하단 탭바 노출
   allowScroll = true,
   noScroll = false,
 }) {
@@ -62,8 +64,14 @@ export default function Layout({
         </main>
 
         {showBottomNavigation && (
-          <div className="shrink-0 border-t-[2.5px] border-jj-ink bg-jj-paper">
+          <div className="shrink-0 border-t border-jj-line bg-jj-paper">
             {bottomNavigation}
+          </div>
+        )}
+
+        {activeTab && (
+          <div className="shrink-0">
+            <BottomTabBar active={activeTab} />
           </div>
         )}
 

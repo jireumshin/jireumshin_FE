@@ -29,6 +29,10 @@ export const selectors = {
   getCurrentTrial: (state) => state.trials.current,
   getMyTrials: (state) => state.trials.mine,
   getMyTrialsLoading: (state) => state.trials.mineLoading,
+  getFeed: (state) => state.trials.feed,
+  getFeedCursor: (state) => state.trials.feedCursor,
+  getFeedLoading: (state) => state.trials.feedLoading,
+  getFeedLoaded: (state) => state.trials.feedLoaded,
   // auth
   getUser: (state) => state.auth.user,
   getIsAuthenticated: (state) => state.auth.user !== null,

@@ -41,13 +41,13 @@ function DashboardPreview() {
         </div>
         <ul className="mt-2 flex flex-col gap-1.5">
           {PREVIEW_CASES.map((c) => (
-            <li key={c.name} className="flex items-center gap-2.5 rounded-xl border-2 border-jj-ink bg-jj-app px-2.5 py-2">
-              <span className="grid h-8 w-8 flex-none place-items-center rounded-lg border-2 border-jj-ink bg-jj-violet-soft text-base">
+            <li key={c.name} className="flex items-center gap-2.5 rounded-xl border border-jj-line bg-jj-app px-2.5 py-2">
+              <span className="grid h-8 w-8 flex-none place-items-center rounded-lg border border-jj-line bg-jj-violet-soft text-base">
                 {c.emoji}
               </span>
               <span className="flex-1 truncate font-display text-xs">{c.name}</span>
               <span
-                className={`flex-none rounded-full border-2 border-jj-ink px-2 py-0.5 font-round text-[9px] ${
+                className={`flex-none rounded-full border border-jj-line px-2 py-0.5 font-round text-[9px] ${
                   c.guilty ? 'bg-jj-red-soft text-[#b3352b]' : 'bg-jj-green-soft text-[#0a7a56]'
                 }`}
               >
@@ -93,7 +93,7 @@ export default function LoginPage() {
   const hasRecords = false
 
   const btnBase =
-    'flex items-center justify-center gap-2 rounded-2xl border-[2.5px] border-jj-ink py-3.5 font-display text-[15px] shadow-hard-sm transition-transform hover:-translate-x-px hover:-translate-y-px hover:shadow-hard active:translate-x-1 active:translate-y-1 active:shadow-none'
+    'flex items-center justify-center gap-2 rounded-2xl border border-jj-line py-3.5 font-display text-[15px] shadow-hard-sm transition-transform hover:-translate-x-px hover:-translate-y-px hover:shadow-hard active:translate-x-1 active:translate-y-1 active:shadow-none'
 
   return (
     <Layout headerProps={{ subtitle: '기록 보관하기', right: <AuthNav showBack={false} /> }}>
@@ -120,7 +120,7 @@ export default function LoginPage() {
         </header>
 
         {hasRecords ? (
-          <article className="rounded-2xl border-[2.5px] border-jj-ink bg-jj-ink p-4 text-white shadow-hard">
+          <article className="rounded-2xl border border-jj-line bg-jj-ink p-4 text-white shadow-hard">
             <p className="mb-3 font-round text-[11px] tracking-wide text-jj-yellow">⚖ 이 브라우저에 쌓인 나의 기록</p>
             <ul className="grid grid-cols-3 gap-2">
               {STATS.map((s) => (
@@ -145,7 +145,7 @@ export default function LoginPage() {
           <button type="button" onClick={startKakao} className={`${btnBase} relative bg-[#FEE500] text-[#3c1e1e]`}>
             <KakaoIcon />
             카카오로 계속하기
-            <span className="absolute -top-2.5 right-3 -rotate-2 rounded-full border-2 border-jj-ink bg-jj-violet px-2 py-0.5 font-round text-[10px] text-white">
+            <span className="absolute -top-2.5 right-3 -rotate-2 rounded-full border border-jj-line bg-jj-violet px-2 py-0.5 font-round text-[10px] text-white">
               3초면 끝나요
             </span>
           </button>

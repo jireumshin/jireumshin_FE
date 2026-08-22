@@ -24,7 +24,7 @@ export default function ProductThumb({
         alt={name || "상품 사진"}
         crossOrigin="anonymous"
         className={cn(
-          "flex-none border-2 border-jj-ink object-cover",
+          "flex-none border border-jj-line object-cover",
           sizes[size],
           className,
         )}

@@ -83,7 +83,7 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
         maxLength={500}
         disabled={sending}
         placeholder="못다 한 사정을 솔직히 적어보세요"
-        className="max-h-28 min-h-11 flex-1 resize-none rounded-xl border-[2.5px] border-jj-ink bg-jj-paper font-round text-[13px] shadow-hard-sm focus-visible:ring-0"
+        className="max-h-28 min-h-11 flex-1 resize-none rounded-xl border border-jj-line bg-jj-paper font-round text-[13px] shadow-hard-sm focus-visible:ring-0"
       />
       <BrutalButton
         tone="yellow"
@@ -126,7 +126,7 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
             ))}
           </div>
           {inExtension && (
-            <div className="mt-2.5 rounded-lg border-2 border-jj-ink bg-jj-violet px-3 py-1.5 text-center font-round text-[11px] text-white">
+            <div className="mt-2.5 rounded-lg border border-jj-line bg-jj-violet px-3 py-1.5 text-center font-round text-[11px] text-white">
               ⚡ 2:2 동점! 연장전이에요 — 중립 <b>🔮 팩트봇</b>을 넘기면
               뒤집혀요
             </div>
@@ -139,7 +139,7 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
           className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-4"
         >
           {/* 기소 개요 — 어떤 지름을 무슨 사유로 변호 중인지 */}
-          <div className="rounded-xl border-[2.5px] border-jj-ink bg-jj-paper px-3.5 py-3 shadow-hard-sm">
+          <div className="rounded-xl border border-jj-line bg-jj-paper px-3.5 py-3 shadow-hard-sm">
             <div className="flex items-center gap-2.5">
               <ProductThumb
                 imageUrl={trial.imageUrl}
@@ -194,7 +194,7 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
 
           {/* 변론 종료 배너 */}
           {closed && !sending && (
-            <div className="mt-1 rounded-xl border-[2.5px] border-jj-ink bg-jj-ink px-4 py-3 text-center text-white">
+            <div className="mt-1 rounded-xl border border-jj-line bg-jj-ink px-4 py-3 text-center text-white">
               <div className="font-display text-sm">
                 ⚖ 변론 종료 · 판결이 확정됐어요
               </div>

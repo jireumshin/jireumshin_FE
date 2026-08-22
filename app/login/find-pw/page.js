@@ -57,7 +57,7 @@ export default function FindPwPage() {
             </p>
           </header>
 
-          <fieldset className="min-w-0 rounded-2xl border-[2.5px] border-jj-ink bg-jj-paper p-4 shadow-hard">
+          <fieldset className="min-w-0 rounded-2xl border border-jj-line bg-jj-paper p-4 shadow-hard">
             <label className="block">
               <span className="mb-2 block font-display text-sm">이메일</span>
               <Input

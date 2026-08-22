@@ -115,7 +115,7 @@ function TrialResult() {
     return (
       <Layout headerProps={{ subtitle: "심리 중" }} noScroll>
         <div className="flex h-full flex-col items-center justify-center gap-7 px-8 text-center">
-          <p className="inline-block -rotate-2 rounded-full border-2 border-jj-ink bg-jj-violet px-4 py-1.5 font-round text-sm text-white shadow-hard-sm">
+          <p className="inline-block -rotate-2 rounded-full border border-jj-line bg-jj-violet px-4 py-1.5 font-round text-sm text-white shadow-hard-sm">
             ⚖ 배심원단이 심리 중…
           </p>
           <h1 className="font-display text-xl leading-snug">
@@ -143,7 +143,7 @@ function TrialResult() {
                   animationDuration: "1s",
                 }}
               >
-                <span className="grid h-14 w-14 place-items-center rounded-xl border-[2.5px] border-jj-ink bg-jj-paper text-2xl shadow-hard-sm">
+                <span className="grid h-14 w-14 place-items-center rounded-xl border border-jj-line bg-jj-paper text-2xl shadow-hard-sm">
                   {JUROR_EMOJI[name]}
                 </span>
                 <small className="font-round text-[9px] text-jj-muted">
@@ -207,7 +207,7 @@ function TrialResult() {
           <h1 className="mt-1 font-display text-[28px] leading-tight">
             {guilty ? "유죄 · 사지 마세요" : "무죄 · 사도 돼요"}
           </h1>
-          <div className="mt-2 inline-block rounded-full border-2 border-jj-ink bg-jj-ink/20 px-3 py-0.5 font-round text-xs">
+          <div className="mt-2 inline-block rounded-full border border-jj-line bg-jj-ink/20 px-3 py-0.5 font-round text-xs">
             배심원 {t.label}
           </div>
         </BrutalCard>
@@ -262,7 +262,7 @@ function TrialResult() {
               <div className="mb-1 font-round text-[10px] text-jj-muted">
                 🧾 기소 사유
               </div>
-              <p className="whitespace-pre-wrap rounded-xl border-2 border-jj-ink bg-jj-app px-3 py-2 font-round text-[11.5px] leading-relaxed text-jj-ink/80">
+              <p className="whitespace-pre-wrap rounded-xl border border-jj-line bg-jj-app px-3 py-2 font-round text-[11.5px] leading-relaxed text-jj-ink/80">
                 “{trial.reason}”
               </p>
             </div>
