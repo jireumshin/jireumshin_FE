@@ -9,7 +9,7 @@ import { Download, Link2, Gavel } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
-import EmojiThumb from "@/components/common/EmojiThumb";
+import JurorAvatar from "@/components/common/JurorAvatar";
 import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import VerdictShareCard from "@/components/widgets/trials/VerdictShareCard";
 import { fetchTrial } from "@/stores/trialsSlice";
@@ -136,7 +136,7 @@ function VerdictView() {
         {/* 공유 액션 */}
         <div className="flex w-full gap-2.5">
           <BrutalButton
-            tone="yellow"
+            tone="ink"
             onClick={saveImage}
             disabled={saving}
             className="flex-1"
@@ -146,7 +146,7 @@ function VerdictView() {
               {saving ? "만드는 중…" : "이미지 저장"}
             </span>
           </BrutalButton>
-          <BrutalButton tone="ink" onClick={copyLink} className="flex-1">
+          <BrutalButton tone="paper" onClick={copyLink} className="flex-1 border border-jj-line">
             <span className="inline-flex items-center gap-2">
               <Link2 className="h-4 w-4" strokeWidth={2.5} />
               링크 복사
@@ -189,9 +189,7 @@ function VerdictView() {
           <ul className="flex flex-col gap-2.5">
             {jury.map((j) => (
               <li key={j.juror} className="flex items-start gap-2.5">
-                <EmojiThumb size="sm" className="bg-jj-app">
-                  {j.emoji}
-                </EmojiThumb>
+                <JurorAvatar name={j.juror} emoji={j.emoji} size="sm" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <span className="font-display text-[13px]">{j.juror}</span>
@@ -215,7 +213,7 @@ function VerdictView() {
 
         {/* 자연 유입 CTA */}
         <BrutalButton
-          tone="red"
+          tone="ink"
           onClick={() => router.push("/")}
           className="w-full"
         >

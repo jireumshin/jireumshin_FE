@@ -56,6 +56,7 @@ export default function RecordsPage() {
   const { user, initialized } = useAuth();
   const trials = useSelector(selectors.getMyTrials);
   const loading = useSelector(selectors.getMyTrialsLoading);
+  const [pubBusyId, setPubBusyId] = useState(null);
 
   useEffect(() => {
     if (initialized && !user) router.replace("/login");
@@ -83,7 +84,6 @@ export default function RecordsPage() {
     }
   };
 
-  const [pubBusyId, setPubBusyId] = useState(null);
   const onTogglePublish = async (t) => {
     setPubBusyId(t.id);
     try {

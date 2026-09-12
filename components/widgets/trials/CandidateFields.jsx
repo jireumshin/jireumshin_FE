@@ -51,7 +51,7 @@ export default function CandidateFields({
           </button>
         </figure>
       ) : (
-        <label className="flex h-16 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-jj-line bg-jj-app font-display text-sm text-jj-muted">
+        <label className="flex h-16 cursor-pointer items-center justify-center gap-2 rounded-xl border border-jj-line bg-jj-app font-display text-sm text-jj-muted">
           📷 상품 사진 <span className="font-round text-xs font-normal">(선택)</span>
           <input
             type="file"

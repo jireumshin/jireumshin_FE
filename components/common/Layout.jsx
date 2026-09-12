@@ -42,7 +42,7 @@ export default function Layout({
 
   return (
     <div className="flex h-svh justify-center">
-      <div className="relative flex h-svh w-full max-w-117 flex-col overflow-hidden border-x-[2.5px] border-jj-ink bg-jj-app">
+      <div className="relative flex h-svh w-full max-w-117 flex-col overflow-hidden border-x border-jj-line bg-jj-app">
         {showHeader && (
           <div className="shrink-0">
             <Header {...headerProps} />

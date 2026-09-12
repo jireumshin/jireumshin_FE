@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function Header({ subtitle = "새 사건 접수", right = null }) {
   return (
-    <header className="flex items-center gap-2.5 border-b border-[#EAC94A] bg-jj-yellow px-4 py-3">
+    <header className="flex items-center gap-2.5 border-b border-jj-line bg-jj-paper px-4 py-3">
       <Link
         href="/"
         aria-label="홈으로"
@@ -16,8 +16,8 @@ export default function Header({ subtitle = "새 사건 접수", right = null })
           className="h-10 w-10 flex-none"
         />
         <span className="block leading-none">
-          <span className="block font-display text-xl leading-none">지름신 재판소</span>
-          <span className="text-[11px] font-extrabold text-[#7a6a00]">
+          <span className="block font-display text-xl leading-none text-jj-ink">지름신 재판소</span>
+          <span className="text-[11px] font-extrabold text-jj-muted">
             {subtitle}
           </span>
         </span>

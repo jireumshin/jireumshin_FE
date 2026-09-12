@@ -10,12 +10,12 @@ const VerdictShareCard = forwardRef(function VerdictShareCard({ trial }, ref) {
   return (
     <div
       ref={ref}
-      className="w-85 shrink-0 border-[3px] border-jj-ink bg-jj-paper font-sans shadow-hard"
+      className="w-85 shrink-0 overflow-hidden rounded-2xl border border-jj-line bg-jj-paper font-sans shadow-hard"
     >
       {/* 헤더 */}
-      <div className="flex items-center justify-between border-b-[3px] border-jj-ink bg-jj-yellow px-4 py-2.5">
-        <span className="font-display text-[15px] text-jj-ink">⚖ 지름신 재판소</span>
-        <span className="rounded-full border-2 border-jj-ink bg-jj-paper px-2 py-0.5 font-round text-[10px] text-jj-ink">
+      <div className="flex items-center justify-between bg-jj-navy px-4 py-3">
+        <span className="font-display text-[15px] text-white">⚖ 지름신 재판소</span>
+        <span className="rounded-full bg-white/15 px-2 py-0.5 font-round text-[10px] text-white">
           판결문
         </span>
       </div>
@@ -30,7 +30,7 @@ const VerdictShareCard = forwardRef(function VerdictShareCard({ trial }, ref) {
         </div>
       )}
 
-      <div className="border-t-[2.5px] border-jj-ink bg-jj-app px-4 py-2 text-center font-round text-[11px] text-jj-muted">
+      <div className="border-t border-jj-line bg-jj-app px-4 py-2 text-center font-round text-[11px] text-jj-muted">
         나도 재판받기 · <span className="text-jj-ink">jireumshin.shop</span>
       </div>
     </div>
@@ -48,12 +48,12 @@ function SingleBody({ trial }) {
         <div className="mt-1 font-display text-[26px] leading-tight">
           {guilty ? "유죄 · 사지 마세요" : "무죄 · 사도 돼요"}
         </div>
-        <div className="mt-2.5 inline-block rounded-full border-2 border-jj-ink bg-black/20 px-3 py-1 font-round text-[12px]">
+        <div className="mt-2.5 inline-block rounded-full border border-white/30 bg-white/15 px-3 py-1 font-round text-[12px]">
           배심원 {t.label}
         </div>
       </div>
 
-      <div className="flex items-center gap-3 border-b-[2.5px] border-jj-ink px-4 py-3">
+      <div className="flex items-center gap-3 border-b border-jj-line px-4 py-3">
         <ProductThumb imageUrl={trial.imageUrl} name={trial.itemName} size="md" share />
         <div className="min-w-0 flex-1">
           <div className="truncate font-display text-[15px] text-jj-ink">{trial.itemName}</div>
@@ -66,8 +66,8 @@ function SingleBody({ trial }) {
         <div className="shrink-0 font-display text-[14px] text-jj-violet">{formatWon(trial.price)}</div>
       </div>
 
-      <div className="flex items-stretch border-t-[2.5px] border-jj-ink">
-        <div className="flex-1 border-r-[2.5px] border-jj-ink px-3 py-2.5 text-center">
+      <div className="flex items-stretch border-t border-jj-line">
+        <div className="flex-1 border-r border-jj-line px-3 py-2.5 text-center">
           <div className="font-round text-[10px] text-jj-muted">예상 후회</div>
           <div className="font-display text-[20px] leading-tight text-jj-red">{trial.regretIndex}%</div>
         </div>
@@ -93,10 +93,10 @@ function VersusBody({ trial }) {
 
   return (
     <>
-      <div className={`px-5 py-5 text-center text-white ${neither ? "bg-jj-ink" : "bg-jj-green"}`}>
+      <div className={`px-5 py-5 text-center text-white ${neither ? "bg-jj-navy" : "bg-jj-green"}`}>
         <div className="font-round text-[11px] tracking-wide opacity-90">비교 판결</div>
         <div className="mt-1 truncate font-display text-[24px] leading-tight">{title}</div>
-        <div className="mt-2.5 inline-block rounded-full border-2 border-jj-ink bg-black/20 px-3 py-1 font-round text-[12px]">
+        <div className="mt-2.5 inline-block rounded-full border border-white/30 bg-white/15 px-3 py-1 font-round text-[12px]">
           {neither ? "지금은 참아요" : "이걸 사세요"}
         </div>
       </div>
@@ -109,8 +109,8 @@ function VersusBody({ trial }) {
 
 function CardRow({ badge, name, price, imageUrl, win, last }) {
   return (
-    <div className={`flex items-center gap-3 px-4 py-2.5 ${last ? "border-b-[2.5px]" : "border-b-2"} border-jj-ink ${win ? "bg-jj-green-soft" : ""}`}>
-      <span className="grid h-5 w-5 flex-none place-items-center rounded border-2 border-jj-ink bg-jj-paper font-display text-[10px]">
+    <div className={`flex items-center gap-3 border-b border-jj-line px-4 py-2.5 ${win ? "bg-jj-green-soft" : ""}`}>
+      <span className="grid h-5 w-5 flex-none place-items-center rounded border border-jj-line bg-jj-app font-display text-[10px] text-jj-ink">
         {badge}
       </span>
       <ProductThumb imageUrl={imageUrl} name={name} size="sm" share />

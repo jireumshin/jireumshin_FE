@@ -18,11 +18,11 @@ export default function Loading({ message = '로딩 중', messages }) {
       aria-live="polite"
       className="flex h-full w-full flex-col items-center justify-center gap-9 bg-jj-app px-6"
     >
-      <figure className="jj-shake m-0 h-36 w-36">
+      <figure className="jj-shake m-0 h-40 w-40">
         <img
-          src="/assets/bong.png"
+          src="/assets/judge.png"
           alt=""
-          className="jj-gavel h-full w-full object-contain"
+          className="h-full w-full object-contain"
         />
       </figure>
       <p className="min-h-7 text-center font-display text-lg text-jj-ink">

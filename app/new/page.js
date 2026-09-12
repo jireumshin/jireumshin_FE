@@ -18,10 +18,10 @@ import { compressImage } from "@/lib/image";
 import { fieldCls } from "@/lib/formStyles";
 
 const JURORS = [
-  { emoji: "🐿️", name: "가성비요정" },
-  { emoji: "🧘", name: "텅장지킴이" },
-  { emoji: "🔥", name: "지름요정" },
-  { emoji: "🔮", name: "팩트봇" },
+  { img: "/assets/value-fairy.png", name: "가성비요정", soft: "#F0F8E8" },
+  { img: "/assets/wallet-guardian.png", name: "텅장지킴이", soft: "#EAF2FE" },
+  { img: "/assets/impluse-fairy.png", name: "지름요정", soft: "#FFF0F3" },
+  { img: "/assets/fact-bot.png", name: "팩트봇", soft: "#F0EEFC" },
 ];
 
 const digitsOf = (s) => s.replace(/[^0-9]/g, "");
@@ -160,7 +160,7 @@ function NewTrialForm() {
               <>
                 둘 중 뭘 살까,{" "}
                 <span className="relative inline-block text-jj-violet">
-                  <span className="absolute inset-x-0 bottom-1 z-0 h-2.5 -rotate-1 bg-jj-yellow" />
+                  <span className="absolute inset-x-0 bottom-1 z-0 h-2.5 -rotate-1 bg-jj-violet/20" />
                   <span className="relative z-10">저울에 올리세요</span>
                 </span>
               </>
@@ -169,7 +169,7 @@ function NewTrialForm() {
                 살까 말까 고민되는
                 <br />그 물건,{" "}
                 <span className="relative inline-block text-jj-red">
-                  <span className="absolute inset-x-0 bottom-1 z-0 h-2.5 -rotate-1 bg-jj-yellow" />
+                  <span className="absolute inset-x-0 bottom-1 z-0 h-2.5 -rotate-1 bg-jj-red/12" />
                   <span className="relative z-10">기소하세요</span>
                 </span>
               </>
@@ -185,8 +185,11 @@ function NewTrialForm() {
         <ul className="flex justify-center gap-2.5">
           {JURORS.map((j) => (
             <li key={j.name} className="flex flex-col items-center gap-1.5">
-              <span className="grid h-12 w-12 place-items-center rounded-xl border border-jj-line bg-jj-paper text-2xl shadow-hard-sm">
-                {j.emoji}
+              <span
+                className="grid h-12 w-12 place-items-center rounded-xl p-1 ring-1 ring-jj-line"
+                style={{ background: j.soft }}
+              >
+                <img src={j.img} alt={j.name} className="h-full w-full object-contain" draggable={false} />
               </span>
               <small className="font-round text-[9px] text-jj-muted">
                 {j.name}
@@ -252,7 +255,7 @@ function NewTrialForm() {
                   </button>
                 </figure>
               ) : (
-                <label className="flex h-20 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-jj-line bg-jj-app font-display text-sm text-jj-muted">
+                <label className="flex h-20 cursor-pointer items-center justify-center gap-2 rounded-xl border border-jj-line bg-jj-app font-display text-sm text-jj-muted">
                   📷 상품 사진 추가
                   <span className="font-round text-xs font-normal">(선택)</span>
                   <input
@@ -328,7 +331,7 @@ function NewTrialForm() {
             <button
               type="button"
               onClick={() => setVersus(true)}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl border-[2.5px] border-dashed border-jj-violet bg-jj-violet-soft py-3 font-display text-sm text-jj-violet"
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-jj-violet/40 bg-jj-violet-soft py-3 font-display text-sm text-jj-violet"
             >
               <Scale className="h-4 w-4" strokeWidth={2.5} />둘 중 고민? 비교
               재판으로 바꾸기
@@ -338,7 +341,7 @@ function NewTrialForm() {
 
         <div className="pt-1">
           <BrutalButton
-            tone="red"
+            tone="ink"
             type="submit"
             disabled={!canSubmit || creating || uploading}
             className="w-full text-[17px]"

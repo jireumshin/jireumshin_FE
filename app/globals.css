@@ -2,17 +2,24 @@
 @import "tailwindcss";
 
 :root {
-  /* ── 지름신 재판소 디자인 토큰 ── */
-  --jj-bg: #DED6FF;          /* 바깥 배경(도트 패턴) */
-  --jj-app: #F3F1FB;         /* 앱 프레임 배경 */
-  --jj-ink: #16121D;         /* 잉크 — 텍스트·보더 */
-  --jj-paper: #FFFFFF;
-  --jj-red: #FF5B5B;         --jj-red-soft: #FFE1E1;    /* 검사 · 유죄 · 사지마 */
-  --jj-green: #12C08A;       --jj-green-soft: #D2F6EA;  /* 변호 · 무죄 · 사도됨 */
-  --jj-violet: #8B6CFF;      --jj-violet-soft: #ECE4FF; /* 중립(팩트봇) · 포인트 */
-  --jj-yellow: #FFD23D;      /* 브랜드 · 헤더 · 강조 */
-  --jj-muted: #7A6BA8;       /* 보조 텍스트 */
-  --jj-line: #ECE7F5;        /* 소프트 톤 얇은 구분선·보더 */
+  /* ── 지름신 재판소 디자인 토큰 (네이비 + 라벤더 + 화이트) ── */
+  --jj-bg: #EEF0F7;          /* 바깥 배경(프레임 밖) */
+  --jj-app: #F6F7FB;         /* 앱 프레임 배경 — 아주 연한 블루그레이 */
+  --jj-navy: #252D52;        /* 딥 네이비 — 주요 CTA */
+  --jj-ink: #20243A;         /* 잉크 — 진한 네이비 텍스트 */
+  --jj-paper: #FFFFFF;       /* 카드 */
+  --jj-red: #FF5B5B;         --jj-red-soft: #FFE1E1;    /* 유죄 · 사지마 */
+  --jj-green: #12C08A;       --jj-green-soft: #D2F6EA;  /* 무죄 · 사도됨 */
+  --jj-violet: #8D8AE8;      --jj-violet-soft: #EDECFA; /* 라벤더 블루 — 포인트 */
+  --jj-yellow: #FFD23D;      /* 저울·왕관 등 캐릭터 소품 강조 */
+  --jj-muted: #747B96;       /* 보조 텍스트 — 블루그레이 */
+  --jj-line: #E5E7F2;        /* 연한 라벤더그레이 구분선·보더 */
+
+  /* 캐릭터 accent (UI 메인 아님, 배심원 의견 등 포인트로만) */
+  --jj-value: #A8D77A;       --jj-value-soft: #F0F8E8;  /* 가성비요정 (초록) */
+  --jj-wallet: #6FA8F8;      --jj-wallet-soft: #EAF2FE; /* 텅장지킴이 (파랑) */
+  --jj-impulse: #FF8FA3;     --jj-impulse-soft: #FFF0F3;/* 지름요정 (핑크) */
+  --jj-fact: #9B8FE8;        --jj-fact-soft: #F0EEFC;   /* 팩트봇 (라벤더) */
 
   /* 폰트 */
   --font-display: "Black Han Sans", sans-serif; /* 제목 */
@@ -20,25 +27,25 @@
   --font-round: "Jua", sans-serif;              /* 캡션·라운드 */
 
   /* ── shadcn 시맨틱 변수 — 브랜드 팔레트로 리컬러 (HSL) ── */
-  --background: 252 55% 96%;          /* app */
-  --foreground: 262 23% 9%;           /* ink */
+  --background: 228 38% 97%;          /* app */
+  --foreground: 230 29% 18%;          /* ink */
   --card: 0 0% 100%;
-  --card-foreground: 262 23% 9%;
+  --card-foreground: 230 29% 18%;
   --popover: 0 0% 100%;
-  --popover-foreground: 262 23% 9%;
-  --primary: 262 23% 9%;              /* ink 버튼 */
-  --primary-foreground: 46 100% 62%;  /* yellow 텍스트 */
-  --secondary: 258 100% 95%;          /* violet-soft */
-  --secondary-foreground: 262 23% 9%;
-  --muted: 252 55% 96%;
-  --muted-foreground: 255 26% 54%;
-  --accent: 258 100% 95%;
-  --accent-foreground: 262 23% 9%;
+  --popover-foreground: 230 29% 18%;
+  --primary: 230 37% 23%;             /* 네이비 CTA */
+  --primary-foreground: 0 0% 100%;    /* 흰 텍스트 */
+  --secondary: 244 55% 95%;           /* violet-soft */
+  --secondary-foreground: 230 29% 18%;
+  --muted: 228 38% 97%;
+  --muted-foreground: 226 15% 52%;
+  --accent: 244 55% 95%;
+  --accent-foreground: 230 29% 18%;
   --destructive: 0 100% 68%;          /* red */
   --destructive-foreground: 0 0% 100%;
-  --border: 262 23% 9%;               /* ink 보더 */
-  --input: 262 23% 9%;
-  --ring: 253 100% 71%;               /* violet 포커스 */
+  --border: 231 32% 92%;              /* 라벤더그레이 보더 */
+  --input: 231 32% 92%;
+  --ring: 242 63% 73%;                /* 라벤더 포커스 */
   --radius: 0.75rem;
 }
 
@@ -64,9 +71,10 @@
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
 
-  /* 지름신 브랜드 색 — bg-jj-red / text-jj-ink / border-jj-yellow 등으로 사용 */
+  /* 지름신 브랜드 색 — bg-jj-navy / text-jj-ink / border-jj-line 등으로 사용 */
   --color-jj-bg: var(--jj-bg);
   --color-jj-app: var(--jj-app);
+  --color-jj-navy: var(--jj-navy);
   --color-jj-ink: var(--jj-ink);
   --color-jj-paper: var(--jj-paper);
   --color-jj-red: var(--jj-red);
@@ -78,11 +86,18 @@
   --color-jj-yellow: var(--jj-yellow);
   --color-jj-muted: var(--jj-muted);
   --color-jj-line: var(--jj-line);
+  --color-jj-value: var(--jj-value);
+  --color-jj-value-soft: var(--jj-value-soft);
+  --color-jj-wallet: var(--jj-wallet);
+  --color-jj-wallet-soft: var(--jj-wallet-soft);
+  --color-jj-impulse: var(--jj-impulse);
+  --color-jj-impulse-soft: var(--jj-impulse-soft);
+  --color-jj-fact: var(--jj-fact);
+  --color-jj-fact-soft: var(--jj-fact-soft);
 
-  /* 하드 오프셋 그림자 — shadow-hard / shadow-hard-sm */
-  /* 소프트 팝 톤 — 하드 오프셋 → 부드러운 그림자 */
-  --shadow-hard: 0 6px 18px rgba(122, 107, 168, 0.14);
-  --shadow-hard-sm: 0 3px 10px rgba(122, 107, 168, 0.12);
+  /* 부드러운 그림자 — shadow-hard / shadow-hard-sm (네이비 톤) */
+  --shadow-hard: 0 8px 24px rgba(37, 45, 82, 0.10);
+  --shadow-hard-sm: 0 3px 12px rgba(37, 45, 82, 0.08);
 
   /* 폰트 유틸 — font-display / font-sans / font-round */
   --font-display: var(--font-display);
@@ -97,8 +112,7 @@
 body {
   color: var(--jj-ink);
   font-family: var(--font-sans);
-  /* 바깥 배경: 깔끔한 화이트 */
-  background-color: #FFFFFF;
+  background-color: var(--jj-bg);
   min-height: 100svh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;

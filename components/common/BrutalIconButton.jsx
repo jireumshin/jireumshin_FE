@@ -9,7 +9,7 @@ const tones = {
   app: 'bg-jj-app text-jj-ink hover:bg-jj-app',
   green: 'bg-jj-green text-white hover:bg-jj-green',
   red: 'bg-jj-red text-white hover:bg-jj-red',
-  ink: 'bg-jj-ink text-jj-yellow hover:bg-jj-ink',
+  ink: 'bg-jj-navy text-white hover:bg-jj-navy',
   yellow: 'bg-jj-yellow text-jj-ink hover:bg-jj-yellow',
 }
 

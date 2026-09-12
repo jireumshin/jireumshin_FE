@@ -35,7 +35,7 @@ function Tab({ tab, active, onClick }) {
 export default function BottomTabBar({ active }) {
   const router = useRouter();
   return (
-    <nav className="flex items-start border-t border-[#E7E2F5] bg-jj-paper px-1.5 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2">
+    <nav className="flex items-start border-t border-jj-line bg-jj-paper px-1.5 pb-[calc(env(safe-area-inset-bottom)+0.5rem)] pt-2">
       {LEFT.map((tab) => (
         <Tab
           key={tab.key}
@@ -53,8 +53,8 @@ export default function BottomTabBar({ active }) {
         className="group flex flex-1 flex-col items-center gap-1 py-1.5 font-round text-[10.5px] text-jj-muted"
       >
         <span
-          className="-mt-6 grid h-11.5 w-11.5 place-items-center rounded-2xl bg-jj-red text-white transition-transform group-hover:scale-110"
-          style={{ boxShadow: "0 6px 16px rgba(255,91,91,.4)" }}
+          className="-mt-6 grid h-11.5 w-11.5 place-items-center rounded-2xl bg-jj-navy text-white transition-transform group-hover:scale-110"
+          style={{ boxShadow: "0 6px 16px rgba(37,45,82,.35)" }}
         >
           <Plus className="h-6 w-6" strokeWidth={2.75} />
         </span>

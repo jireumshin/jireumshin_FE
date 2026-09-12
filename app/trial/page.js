@@ -8,7 +8,7 @@ import { Share2, Gavel, Scale, Bookmark } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
-import EmojiThumb from "@/components/common/EmojiThumb";
+import JurorAvatar from "@/components/common/JurorAvatar";
 import ProductThumb from "@/components/common/ProductThumb";
 import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import DefenseChat from "@/components/widgets/trials/DefenseChat";
@@ -275,9 +275,7 @@ function TrialResult() {
           <ul className="flex flex-col gap-2.5">
             {jury.map((j) => (
               <li key={j.juror} className="flex items-start gap-2.5">
-                <EmojiThumb size="sm" className="bg-jj-app">
-                  {j.emoji}
-                </EmojiThumb>
+                <JurorAvatar name={j.juror} emoji={j.emoji} size="sm" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <span className="font-display text-[13px]">{j.juror}</span>

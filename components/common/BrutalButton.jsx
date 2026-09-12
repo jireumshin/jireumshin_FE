@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 
 const tones = {
   red: 'bg-jj-red text-white hover:bg-jj-red',
-  ink: 'bg-jj-ink text-jj-yellow hover:bg-jj-ink',
+  ink: 'bg-jj-navy text-white hover:bg-jj-navy',
   yellow: 'bg-jj-yellow text-jj-ink hover:bg-jj-yellow',
   green: 'bg-jj-green text-white hover:bg-jj-green',
   paper: 'bg-jj-paper text-jj-ink hover:bg-jj-paper',
