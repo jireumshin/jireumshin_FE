@@ -321,7 +321,7 @@ function EmptyState({ onStart }) {
           첫 지름을 재판대에 세워볼까요?
         </p>
       </div>
-      <BrutalButton tone="red" onClick={onStart} className="w-full">
+      <BrutalButton tone="ink" onClick={onStart} className="w-full">
         지름신 기소하기
       </BrutalButton>
     </BrutalCard>

@@ -107,7 +107,7 @@ export default function LoginPage() {
             {hasRecords ? '지금까지의 재판 기록,' : '내 판례를 안전하게'}
             <br />
             <span className="relative inline-block text-jj-violet">
-              <span className="absolute inset-x-0 bottom-1 z-0 h-2.5 -rotate-1 bg-jj-yellow" />
+              <span className="absolute inset-x-0 bottom-1 z-0 h-2.5 -rotate-1 bg-jj-violet/20" />
               <span className="relative z-10">영구 보관</span>
             </span>
             {hasRecords ? '할까요?' : '하세요'}

@@ -107,7 +107,7 @@ function ResetPasswordForm() {
       </fieldset>
 
       <BrutalButton
-        tone="red"
+        tone="ink"
         type="submit"
         disabled={!canSubmit || submitting}
         className="w-full text-[17px]"

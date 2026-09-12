@@ -122,7 +122,7 @@ export default function Home() {
                 피드 <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.5} />
               </button>
             </div>
-            <div className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 pb-1">
+            <div className="-mx-5 flex snap-x gap-3 overflow-x-auto px-5 py-2">
               {feedPreview.map((t) => (
                 <MiniTrialCard
                   key={t.id}

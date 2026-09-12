@@ -126,7 +126,7 @@ export default function SignupPage() {
         </fieldset>
 
         <BrutalButton
-          tone="red"
+          tone="ink"
           type="submit"
           disabled={!canSubmit || isLoading}
           className="w-full text-[17px]"

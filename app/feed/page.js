@@ -104,7 +104,7 @@ function EmptyState({ onStart }) {
           첫 판례를 공개해 피드를 열어보세요
         </p>
       </div>
-      <BrutalButton tone="red" onClick={onStart} className="w-full">
+      <BrutalButton tone="ink" onClick={onStart} className="w-full">
         지름신 기소하기
       </BrutalButton>
     </BrutalCard>
