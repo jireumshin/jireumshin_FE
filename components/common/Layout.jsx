@@ -70,7 +70,7 @@ export default function Layout({
         )}
 
         {activeTab && (
-          <div className="shrink-0">
+          <div className="relative z-20 shrink-0">
             <BottomTabBar active={activeTab} />
           </div>
         )}

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { RotateCw, ServerCrash } from 'lucide-react'
+import { RotateCw } from 'lucide-react'
 
 import Layout from '@/components/common/Layout'
 import BrutalButton from '@/components/common/BrutalButton'
@@ -26,9 +26,12 @@ export default function ServerErrorPage() {
   return (
     <Layout showHeader={false} noScroll>
       <div className="flex h-full flex-col items-center justify-center gap-6 px-8 text-center">
-        <span className="grid h-24 w-24 -rotate-3 place-items-center rounded-2xl border border-jj-line bg-jj-red text-white shadow-hard">
-          <ServerCrash className="h-12 w-12" />
-        </span>
+        <img
+          src="/assets/judge.png"
+          alt=""
+          className="h-32 w-32 object-contain opacity-90"
+          draggable={false}
+        />
 
         <div className="space-y-2.5">
           <h1 className="font-display text-2xl leading-tight">
