@@ -163,8 +163,10 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
           {/* 안내 */}
           <div className="rounded-xl border-2 border-dashed border-jj-ink/30 bg-jj-paper/60 px-3.5 py-2.5 text-center font-round text-[11px] leading-relaxed text-jj-muted">
             배심원마다 <b className="text-jj-ink">마음이 움직이는 지점이 달라요.</b>{" "}
-            🐿️는 숫자·계산, 🧘는 감당·필요, 🔥는 감정, 🔮는 새로운 정보에
-            움직여요.
+            <img src="/assets/value-fairy.png" alt="가성비요정" className="inline-block h-4 w-4 align-text-bottom" />는 숫자·계산,{" "}
+            <img src="/assets/wallet-guardian.png" alt="텅장지킴이" className="inline-block h-4 w-4 align-text-bottom" />는 감당·필요,{" "}
+            <img src="/assets/impluse-fairy.png" alt="지름요정" className="inline-block h-4 w-4 align-text-bottom" />는 감정,{" "}
+            <img src="/assets/fact-bot.png" alt="팩트봇" className="inline-block h-4 w-4 align-text-bottom" />는 새로운 정보에 움직여요.
           </div>
 
           {messages.map((m) => (

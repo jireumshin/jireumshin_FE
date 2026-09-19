@@ -1,14 +1,25 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { jurorAvatar } from "@/lib/trial";
 
 // 배심원 1명의 설득 게이지 바. delta = 직전 변론 대비 증감(있으면 표시).
 export default function JuryGaugeBar({ juror, emoji, gauge, vote, delta }) {
   const inno = vote === "NOT_GUILTY";
   const showDelta = typeof delta === "number" && delta !== 0;
+  const avatar = jurorAvatar(juror);
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-base leading-none">{emoji}</span>
+      {avatar ? (
+        <span
+          className="grid h-6 w-6 flex-none place-items-center rounded-md p-0.5"
+          style={{ background: avatar.soft }}
+        >
+          <img src={avatar.img} alt="" className="h-full w-full object-contain" draggable={false} />
+        </span>
+      ) : (
+        <span className="text-base leading-none">{emoji}</span>
+      )}
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between font-round text-[10px] text-jj-ink/70">
           <span className="truncate">{juror}</span>

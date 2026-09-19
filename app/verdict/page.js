@@ -5,14 +5,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { toPng } from "html-to-image";
-import { Download, Link2, Gavel } from "lucide-react";
+import { Download, Link2, Gavel, Globe } from "lucide-react";
 import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
-import JurorAvatar from "@/components/common/JurorAvatar";
-import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import VerdictShareCard from "@/components/widgets/trials/VerdictShareCard";
-import { fetchTrial } from "@/stores/trialsSlice";
+import {
+  fetchTrial,
+  publishTrial,
+  unpublishTrial,
+  claimTrial,
+} from "@/stores/trialsSlice";
+import { useAuth } from "@/contexts/AuthContext";
+import { cn } from "@/lib/utils";
 
 function VerdictView() {
   const router = useRouter();
@@ -20,9 +25,11 @@ function VerdictView() {
   const id = useSearchParams().get("id");
   const cardRef = useRef(null);
 
+  const { requireAuth } = useAuth();
   const [phase, setPhase] = useState("loading"); // loading | ready | pending | error
   const [trial, setTrial] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [pubBusy, setPubBusy] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -92,6 +99,29 @@ function VerdictView() {
     }
   };
 
+  // 커뮤니티 피드 공개/비공개 (공개는 로그인 필요 — 익명은 로그인 유도)
+  const onTogglePublish = async () => {
+    if (!requireAuth()) return; // 비로그인 → 로그인 페이지로
+    if (pubBusy) return;
+    setPubBusy(true);
+    try {
+      let t = trial;
+      if (!t.userId) t = await dispatch(claimTrial(t.id)).unwrap(); // 익명 판례 본인 귀속
+      if (t.isPublic) {
+        t = await dispatch(unpublishTrial(t.id)).unwrap();
+        toast("피드에서 내렸어요");
+      } else {
+        t = await dispatch(publishTrial(t.id)).unwrap();
+        toast("🌐 커뮤니티 피드에 공개했어요");
+      }
+      setTrial(t);
+    } catch (e) {
+      toast.error(typeof e === "string" ? e : "변경에 실패했어요");
+    } finally {
+      setPubBusy(false);
+    }
+  };
+
   if (phase === "loading") {
     return <Layout isLoading headerProps={{ subtitle: "판례 조회 중" }} />;
   }
@@ -125,8 +155,6 @@ function VerdictView() {
   }
 
   // phase === "ready"
-  const jury = Array.isArray(trial.jury) ? trial.jury : [];
-
   return (
     <Layout allowScroll headerProps={{ subtitle: "판례 공유" }}>
       <section className="flex flex-col items-center gap-5 px-5 pb-8 pt-6">
@@ -154,62 +182,39 @@ function VerdictView() {
           </BrutalButton>
         </div>
 
-        {/* 기소 사유 전문 — 배심원 판결이 타당한지 판단하는 근거 */}
-        {trial.mode === "VERSUS" ? (
-          <BrutalCard className="w-full space-y-3 p-4">
-            <div className="font-round text-[11px] text-jj-muted">🧾 기소 사유</div>
-            {[
-              { b: "🅰", name: trial.itemName, r: trial.reason },
-              { b: "🅱", name: trial.itemNameB, r: trial.reasonB },
-            ].map((x) => (
-              <div key={x.b}>
-                <div className="font-display text-[12px]">
-                  {x.b} {x.name}
-                </div>
-                <p className="mt-0.5 whitespace-pre-wrap font-round text-[12px] leading-relaxed text-jj-ink/80">
-                  “{x.r}”
-                </p>
+        {/* 커뮤니티 공개 (본인/작성자 뷰에서만) — 공개는 로그인 필요 */}
+        {!trial.isPublicView && (
+          <BrutalCard className="flex w-full items-center gap-3 p-4">
+            <span
+              className={cn(
+                "grid h-10 w-10 flex-none place-items-center rounded-xl",
+                trial.isPublic ? "bg-jj-green-soft text-jj-green" : "bg-jj-violet-soft text-jj-violet",
+              )}
+            >
+              <Globe className="h-5 w-5" strokeWidth={2.5} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="font-display text-[14px] text-jj-ink">커뮤니티 피드에 공개</div>
+              <div className="mt-0.5 font-round text-[11px] leading-snug text-jj-muted">
+                {trial.isPublic
+                  ? "다른 사람들이 익명 요약본으로 볼 수 있어요"
+                  : "공개하면 익명 요약본으로 피드에 올라가요"}
               </div>
-            ))}
+            </div>
+            <button
+              type="button"
+              onClick={onTogglePublish}
+              disabled={pubBusy}
+              aria-pressed={trial.isPublic}
+              className={cn(
+                "flex-none rounded-full px-3.5 py-1.5 font-display text-[12px] shadow-hard-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50",
+                trial.isPublic ? "bg-jj-green text-white" : "bg-jj-navy text-white",
+              )}
+            >
+              {trial.isPublic ? "공개 중" : "공개하기"}
+            </button>
           </BrutalCard>
-        ) : trial.reason ? (
-          <BrutalCard className="w-full p-4">
-            <div className="mb-1.5 font-round text-[11px] text-jj-muted">🧾 기소 사유</div>
-            <p className="whitespace-pre-wrap font-round text-[12px] leading-relaxed text-jj-ink/80">
-              “{trial.reason}”
-            </p>
-          </BrutalCard>
-        ) : null}
-
-        {/* 배심원 평결 상세 */}
-        <BrutalCard className="w-full p-4">
-          <div className="mb-3 font-display text-sm">
-            {trial.mode === "VERSUS" ? "⚖ 배심원 비교" : "⚖ 배심원 평결"}
-          </div>
-          <ul className="flex flex-col gap-2.5">
-            {jury.map((j) => (
-              <li key={j.juror} className="flex items-start gap-2.5">
-                <JurorAvatar name={j.juror} emoji={j.emoji} size="sm" />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-display text-[13px]">{j.juror}</span>
-                    {trial.mode === "VERSUS" ? (
-                      <span className="font-round text-[10px] text-jj-muted">
-                        A <b className={j.scoreA >= j.scoreB ? "text-jj-green" : "text-jj-ink"}>{j.scoreA}</b>
-                        {" · "}B <b className={j.scoreB > j.scoreA ? "text-jj-green" : "text-jj-ink"}>{j.scoreB}</b>
-                      </span>
-                    ) : (
-                      <VerdictChip verdict={j.vote} className="px-1.5 py-0 text-[9px]" />
-                    )}
-                  </div>
-                  <p className="mt-0.5 font-round text-[11px] leading-relaxed text-jj-ink/80">
-                    {j.argument}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </BrutalCard>
+        )}
 
         {/* 자연 유입 CTA */}
         <BrutalButton
