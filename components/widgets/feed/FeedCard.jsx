@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { formatWon } from "@/lib/trial";
 import ProductThumb from "@/components/common/ProductThumb";
 import BrutalCard from "@/components/common/BrutalCard";
+import UserAvatar from "@/components/common/UserAvatar";
 import VerdictChip from "@/components/widgets/trials/VerdictChip";
 
 export default function FeedCard({ trial, onOpen, onLike, likeBusy }) {
@@ -56,7 +57,8 @@ export default function FeedCard({ trial, onOpen, onLike, likeBusy }) {
         )}
       </button>
 
-      <div className="flex items-center justify-end border-t-2 border-dashed border-jj-ink/15 pt-2">
+      <div className="flex items-center justify-between border-t-2 border-dashed border-jj-ink/15 pt-2">
+        <UserAvatar src={trial.authorAvatarUrl} alt="작성자 캐릭터" size="sm" />
         <button
           type="button"
           onClick={onLike}

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { LogOut } from "lucide-react";
 
+import UserAvatar from "@/components/common/UserAvatar";
 import { useAuth } from "@/contexts/AuthContext";
 
 const btnCls =
@@ -38,9 +39,10 @@ export default function AuthButton() {
         type="button"
         onClick={() => router.push("/mypage")}
         aria-label="마이페이지"
-        className="max-w-24 truncate rounded-lg border border-jj-line bg-jj-violet px-2.5 py-2 font-display text-xs text-white shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+        className="flex max-w-32 items-center gap-1.5 rounded-lg border border-jj-line bg-jj-violet py-1 pl-1 pr-2.5 font-display text-xs text-white shadow-hard-sm transition-transform active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
       >
-        👤 {user.nickname}
+        <UserAvatar src={user.avatarUrl} size="xs" className="bg-white" />
+        <span className="truncate">{user.nickname}</span>
       </button>
       <button
         type="button"

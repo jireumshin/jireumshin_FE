@@ -65,6 +65,18 @@ export const updateNickname = createAsyncThunk(
   },
 );
 
+export const updateAvatar = createAsyncThunk(
+  "auth/updateAvatar",
+  async (avatar, { rejectWithValue }) => {
+    try {
+      const res = await createApiClient().patch("/auth/avatar", { avatar });
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(extractMessage(error, "캐릭터 변경에 실패했어요."));
+    }
+  },
+);
+
 // 비밀번호 재설정 요청 — 서버가 재설정 링크를 메일로 발송
 export const requestPasswordReset = createAsyncThunk(
   "auth/requestPasswordReset",
@@ -126,6 +138,9 @@ const authSlice = createSlice({
       })
       // 닉네임 변경
       .addCase(updateNickname.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      .addCase(updateAvatar.fulfilled, (state, action) => {
         state.user = action.payload;
       })
       // 로그인 / 회원가입 (둘 다 성공 시 로그인 상태)

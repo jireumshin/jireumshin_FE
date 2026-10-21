@@ -5,10 +5,12 @@ import { Provider } from "react-redux";
 
 import trialsReducer from "./trialsSlice";
 import authReducer from "./authSlice";
+import optionsReducer from "./optionsSlice";
 
 const rootReducer = combineReducers({
   trials: trialsReducer,
   auth: authReducer,
+  options: optionsReducer,
 });
 
 export const store = configureStore({
@@ -39,6 +41,9 @@ export const selectors = {
   getAuthStatus: (state) => state.auth.status,
   getAuthError: (state) => state.auth.error,
   getAuthInitialized: (state) => state.auth.initialized,
+  // options
+  getAvatarOptions: (state) => state.options.avatars,
+  getOptionsLoaded: (state) => state.options.loaded,
 };
 
 export function ReduxProvider({ children }) {

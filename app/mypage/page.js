@@ -8,7 +8,8 @@ import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
 import BrutalIconButton from "@/components/common/BrutalIconButton";
-import EmojiThumb from "@/components/common/EmojiThumb";
+import UserAvatar from "@/components/common/UserAvatar";
+import AvatarPickerDialog from "@/components/dialog/profile/AvatarPickerDialog";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,10 +27,12 @@ function formatDate(iso) {
 
 export default function MyPage() {
   const router = useRouter();
-  const { user, initialized, updateNickname, logout } = useAuth();
+  const { user, initialized, updateNickname, updateAvatar, logout } = useAuth();
   const [editing, setEditing] = useState(false);
   const [nickname, setNickname] = useState("");
   const [saving, setSaving] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [avatarSaving, setAvatarSaving] = useState(false);
 
   // 세션 복원이 끝난 뒤 비로그인이면 로그인 화면으로
   useEffect(() => {
@@ -65,6 +68,23 @@ export default function MyPage() {
     }
   };
 
+  const onSelectAvatar = async (key) => {
+    if (key === user.avatar) {
+      setPickerOpen(false);
+      return;
+    }
+    setAvatarSaving(true);
+    try {
+      await updateAvatar(key);
+      toast("🎭 프로필 캐릭터를 바꿨어요");
+      setPickerOpen(false);
+    } catch (err) {
+      toast.error(typeof err === "string" ? err : "캐릭터 변경에 실패했어요.");
+    } finally {
+      setAvatarSaving(false);
+    }
+  };
+
   const onLogout = async () => {
     await logout();
     toast("로그아웃 됐어요");
@@ -75,9 +95,17 @@ export default function MyPage() {
     <Layout headerProps={{ subtitle: "마이페이지" }} activeTab="mypage" allowScroll>
       <section className="flex flex-col gap-5 px-5 pb-8 pt-7">
         <header className="text-center">
-          <EmojiThumb className="mx-auto h-20 w-20 rounded-2xl border-[2.5px] text-4xl shadow-hard">
-            👤
-          </EmojiThumb>
+          <button
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            aria-label="프로필 캐릭터 변경"
+            className="relative mx-auto block transition-transform active:scale-95"
+          >
+            <UserAvatar src={user.avatarUrl} size="xl" className="shadow-hard" />
+            <span className="absolute -bottom-1 -right-1 grid h-7 w-7 place-items-center rounded-full border border-jj-line bg-white shadow-hard-sm">
+              <Pencil className="h-3.5 w-3.5" strokeWidth={2.5} />
+            </span>
+          </button>
           <h1 className="mt-3.5 font-display text-2xl leading-tight">
             {user.nickname}
           </h1>
@@ -190,6 +218,14 @@ export default function MyPage() {
           </span>
         </BrutalButton>
       </section>
+
+      <AvatarPickerDialog
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        current={user.avatar}
+        onSelect={onSelectAvatar}
+        saving={avatarSaving}
+      />
     </Layout>
   );
 }
