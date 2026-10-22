@@ -2,8 +2,8 @@
 
 import { ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { guessEmoji, formatWon, relativeDay } from '@/lib/trial'
-import EmojiThumb from '@/components/common/EmojiThumb'
+import { formatWon, relativeDay } from '@/lib/trial'
+import ProductThumb from '@/components/common/ProductThumb'
 import VerdictChip from './VerdictChip'
 
 // 판례 행 (썸네일 + 이름 + 날짜·가격 + 판결 칩). 클릭 가능한 버튼.
@@ -27,7 +27,7 @@ export default function TrialListItem({ trial, onClick, className }) {
         className,
       )}
     >
-      <EmojiThumb>{guessEmoji(trial.itemName)}</EmojiThumb>
+      <ProductThumb imageUrl={trial.imageUrl || trial.imageUrlB} name={trial.itemName} />
       <span className="min-w-0 flex-1">
         <span className="block truncate font-display text-sm leading-tight">
           {versus ? `${trial.itemName} vs ${trial.itemNameB}` : trial.itemName}
