@@ -12,17 +12,27 @@ export const fetchOptions = createAsyncThunk(
       return rejectWithValue(handleApiError(error));
     }
   },
+  // 여러 컴포넌트가 동시에 불러도 요청은 한 번만
+  { condition: (_, { getState }) => !getState().options.loaded && !getState().options.loading },
 );
 
 const optionsSlice = createSlice({
   name: "options",
-  initialState: { avatars: [], loaded: false },
+  initialState: { avatars: [], loaded: false, loading: false },
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchOptions.fulfilled, (state, action) => {
-      state.avatars = action.payload.avatars ?? [];
-      state.loaded = true;
-    });
+    builder
+      .addCase(fetchOptions.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchOptions.fulfilled, (state, action) => {
+        state.avatars = action.payload.avatars ?? [];
+        state.loaded = true;
+        state.loading = false;
+      })
+      .addCase(fetchOptions.rejected, (state) => {
+        state.loading = false;
+      });
   },
 });
 

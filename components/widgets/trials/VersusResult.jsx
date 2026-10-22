@@ -10,6 +10,7 @@ import Layout from '@/components/common/Layout'
 import BrutalButton from '@/components/common/BrutalButton'
 import BrutalCard from '@/components/common/BrutalCard'
 import ProductThumb from '@/components/common/ProductThumb'
+import JurorAvatar from '@/components/common/JurorAvatar'
 import VersusDefenseChat from '@/components/widgets/trials/VersusDefenseChat'
 import { useAuth } from '@/contexts/AuthContext'
 import { selectors } from '@/stores'
@@ -138,9 +139,7 @@ export default function VersusResult({ trial, onUpdate }) {
           <ul className="flex flex-col gap-3">
             {jurors.map((j) => (
               <li key={j.juror} className="flex items-start gap-2.5">
-                <span className="grid h-9 w-9 flex-none place-items-center rounded-lg border border-jj-line bg-jj-app text-lg">
-                  {j.emoji}
-                </span>
+                <JurorAvatar name={j.juror} emoji={j.emoji} size="sm" />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <span className="font-display text-[13px]">{j.juror}</span>

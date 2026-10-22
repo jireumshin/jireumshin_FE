@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils'
 
 const sizes = {
+  xs: 'h-6 w-6 rounded-md text-sm',
   sm: 'h-9 w-9 rounded-lg text-lg',
   md: 'h-11 w-11 rounded-xl text-xl',
   lg: 'h-12 w-12 rounded-xl text-2xl',

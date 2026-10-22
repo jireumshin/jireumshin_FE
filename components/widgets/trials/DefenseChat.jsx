@@ -12,6 +12,8 @@ import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import JuryGaugeBar from "@/components/widgets/trials/JuryGaugeBar";
 import ChatBubble from "@/components/widgets/trials/ChatBubble";
 import ProductThumb from "@/components/common/ProductThumb";
+import JurorAvatar from "@/components/common/JurorAvatar";
+import CharacterImage from "@/components/common/CharacterImage";
 import { submitDefense } from "@/stores/trialsSlice";
 import { gaugesFor, defenseInfo, formatWon } from "@/lib/trial";
 
@@ -127,7 +129,12 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
           </div>
           {inExtension && (
             <div className="mt-2.5 rounded-lg border border-jj-line bg-jj-violet px-3 py-1.5 text-center font-round text-[11px] text-white">
-              ⚡ 2:2 동점! 연장전이에요 — 중립 <b>🔮 팩트봇</b>을 넘기면
+              ⚡ 2:2 동점! 연장전이에요 — 중립{" "}
+              <JurorAvatar
+                name="팩트봇"
+                className="inline-grid h-5 w-5 rounded p-0.5 align-middle"
+              />{" "}
+              <b>팩트봇</b>을 넘기면
               뒤집혀요
             </div>
           )}
@@ -163,10 +170,10 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
           {/* 안내 */}
           <div className="rounded-xl border-2 border-dashed border-jj-ink/30 bg-jj-paper/60 px-3.5 py-2.5 text-center font-round text-[11px] leading-relaxed text-jj-muted">
             배심원마다 <b className="text-jj-ink">마음이 움직이는 지점이 달라요.</b>{" "}
-            <img src="/assets/value-fairy.png" alt="가성비요정" className="inline-block h-4 w-4 align-text-bottom" />는 숫자·계산,{" "}
-            <img src="/assets/wallet-guardian.png" alt="텅장지킴이" className="inline-block h-4 w-4 align-text-bottom" />는 감당·필요,{" "}
-            <img src="/assets/impluse-fairy.png" alt="지름요정" className="inline-block h-4 w-4 align-text-bottom" />는 감정,{" "}
-            <img src="/assets/fact-bot.png" alt="팩트봇" className="inline-block h-4 w-4 align-text-bottom" />는 새로운 정보에 움직여요.
+            <CharacterImage name="가성비요정" className="inline-block h-4 w-4 align-text-bottom" />는 숫자·계산,{" "}
+            <CharacterImage name="텅장지킴이" className="inline-block h-4 w-4 align-text-bottom" />는 감당·필요,{" "}
+            <CharacterImage name="지름요정" className="inline-block h-4 w-4 align-text-bottom" />는 감정,{" "}
+            <CharacterImage name="팩트봇" className="inline-block h-4 w-4 align-text-bottom" />는 새로운 정보에 움직여요.
           </div>
 
           {messages.map((m) => (

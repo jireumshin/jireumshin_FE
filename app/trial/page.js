@@ -16,15 +16,8 @@ import VersusResult from "@/components/widgets/trials/VersusResult";
 import { useAuth } from "@/contexts/AuthContext";
 import { selectors } from "@/stores";
 import { fetchTrial, requestVerdict, claimTrial } from "@/stores/trialsSlice";
-import { formatWon, tally, defenseInfo } from "@/lib/trial";
+import { formatWon, tally, defenseInfo, JUROR_NAMES } from "@/lib/trial";
 
-const JURORS = ["가성비요정", "텅장지킴이", "지름요정", "팩트봇"];
-const JUROR_EMOJI = {
-  가성비요정: "🐿️",
-  텅장지킴이: "🧘",
-  지름요정: "🔥",
-  팩트봇: "🔮",
-};
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -134,7 +127,7 @@ function TrialResult() {
             )}
           </h1>
           <ul className="flex gap-3">
-            {JURORS.map((name, i) => (
+            {JUROR_NAMES.map((name, i) => (
               <li
                 key={name}
                 className="flex flex-col items-center gap-1.5 animate-bounce"
@@ -143,9 +136,10 @@ function TrialResult() {
                   animationDuration: "1s",
                 }}
               >
-                <span className="grid h-14 w-14 place-items-center rounded-xl border border-jj-line bg-jj-paper text-2xl shadow-hard-sm">
-                  {JUROR_EMOJI[name]}
-                </span>
+                <JurorAvatar
+                  name={name}
+                  className="h-14 w-14 rounded-xl shadow-hard-sm"
+                />
                 <small className="font-round text-[9px] text-jj-muted">
                   {name}
                 </small>

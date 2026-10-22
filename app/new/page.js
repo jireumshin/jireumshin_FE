@@ -9,6 +9,7 @@ import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalIconButton from "@/components/common/BrutalIconButton";
 import ServerGuard from "@/components/common/ServerGuard";
+import JurorAvatar from "@/components/common/JurorAvatar";
 import CandidateFields from "@/components/widgets/trials/CandidateFields";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,13 +17,7 @@ import { selectors } from "@/stores";
 import { createTrial, uploadTrialImage } from "@/stores/trialsSlice";
 import { compressImage } from "@/lib/image";
 import { fieldCls } from "@/lib/formStyles";
-
-const JURORS = [
-  { img: "/assets/value-fairy.png", name: "가성비요정", soft: "#F0F8E8" },
-  { img: "/assets/wallet-guardian.png", name: "텅장지킴이", soft: "#EAF2FE" },
-  { img: "/assets/impluse-fairy.png", name: "지름요정", soft: "#FFF0F3" },
-  { img: "/assets/fact-bot.png", name: "팩트봇", soft: "#F0EEFC" },
-];
+import { JUROR_NAMES } from "@/lib/trial";
 
 const digitsOf = (s) => s.replace(/[^0-9]/g, "");
 const formatPrice = (raw) => {
@@ -183,16 +178,11 @@ function NewTrialForm() {
         </header>
 
         <ul className="flex justify-center gap-2.5">
-          {JURORS.map((j) => (
-            <li key={j.name} className="flex flex-col items-center gap-1.5">
-              <span
-                className="grid h-12 w-12 place-items-center rounded-xl p-1 ring-1 ring-jj-line"
-                style={{ background: j.soft }}
-              >
-                <img src={j.img} alt={j.name} className="h-full w-full object-contain" draggable={false} />
-              </span>
+          {JUROR_NAMES.map((name) => (
+            <li key={name} className="flex flex-col items-center gap-1.5">
+              <JurorAvatar name={name} size="lg" />
               <small className="font-round text-[9px] text-jj-muted">
-                {j.name}
+                {name}
               </small>
             </li>
           ))}

@@ -8,18 +8,19 @@ import Layout from '@/components/common/Layout'
 import ServerGuard from '@/components/common/ServerGuard'
 import AuthButton from '@/components/common/AuthButton'
 import ProductThumb from '@/components/common/ProductThumb'
+import CharacterImage from '@/components/common/CharacterImage'
 import VerdictChip from '@/components/widgets/trials/VerdictChip'
 import { selectors } from '@/stores'
 import { fetchFeed } from '@/stores/trialsSlice'
-import { formatWon } from '@/lib/trial'
+import { formatWon, jurorAvatar } from '@/lib/trial'
 import { cn } from '@/lib/utils'
 
-// 배심원 4명 — 캐릭터 이미지·accent 색(포인트로만)·성격 한마디
+// 배심원 4명 — 홈 전용 강조색(glow)·성격 한마디 (이미지·배경색은 lib/trial)
 const JURORS = [
-  { img: '/assets/value-fairy.png', name: '가성비요정', soft: '#F0F8E8', glow: 'rgba(168,215,122,.28)', desc: '그 가격이면 조금 더 고민해봐도 좋아요.' },
-  { img: '/assets/wallet-guardian.png', name: '텅장지킴이', soft: '#EAF2FE', glow: 'rgba(111,168,248,.28)', desc: '이번 달 소비 내역부터 확인하시죠.' },
-  { img: '/assets/impluse-fairy.png', name: '지름요정', soft: '#FFF0F3', glow: 'rgba(255,143,163,.28)', desc: '근데… 예쁘긴 하네요. 인생 한 방이잖아요.' },
-  { img: '/assets/fact-bot.png', name: '팩트봇', soft: '#F0EEFC', glow: 'rgba(155,143,232,.28)', desc: '감정은 빼고 객관적인 정보만 확인하겠습니다.' },
+  { name: '가성비요정', glow: 'rgba(168,215,122,.28)', desc: '그 가격이면 조금 더 고민해봐도 좋아요.' },
+  { name: '텅장지킴이', glow: 'rgba(111,168,248,.28)', desc: '이번 달 소비 내역부터 확인하시죠.' },
+  { name: '지름요정', glow: 'rgba(255,143,163,.28)', desc: '근데… 예쁘긴 하네요. 인생 한 방이잖아요.' },
+  { name: '팩트봇', glow: 'rgba(155,143,232,.28)', desc: '감정은 빼고 객관적인 정보만 확인하겠습니다.' },
 ]
 
 export default function Home() {
@@ -61,9 +62,9 @@ export default function Home() {
                         'grid aspect-square w-full place-items-center rounded-2xl p-1.5 transition-all',
                         openJuror === i ? 'ring-2 ring-jj-navy' : 'ring-1 ring-jj-line',
                       )}
-                      style={{ background: j.soft, boxShadow: openJuror === i ? `0 6px 16px ${j.glow}` : 'none' }}
+                      style={{ background: jurorAvatar(j.name).soft, boxShadow: openJuror === i ? `0 6px 16px ${j.glow}` : 'none' }}
                     >
-                      <img src={j.img} alt={j.name} className="h-full w-full object-contain" draggable={false} />
+                      <CharacterImage name={j.name} className="h-full w-full object-contain" />
                     </span>
                     <span
                       className={cn(
