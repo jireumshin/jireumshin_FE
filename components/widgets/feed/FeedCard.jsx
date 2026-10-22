@@ -58,7 +58,12 @@ export default function FeedCard({ trial, onOpen, onLike, likeBusy }) {
       </button>
 
       <div className="flex items-center justify-between border-t-2 border-dashed border-jj-ink/15 pt-2">
-        <UserAvatar src={trial.authorAvatarUrl} alt="작성자 캐릭터" size="sm" />
+        <span className="flex min-w-0 items-center gap-1.5">
+          <UserAvatar src={trial.authorAvatarUrl} alt="" size="sm" />
+          <span className="truncate font-round text-[12px] text-jj-ink">
+            {trial.authorNickname ?? "익명"}
+          </span>
+        </span>
         <button
           type="button"
           onClick={onLike}

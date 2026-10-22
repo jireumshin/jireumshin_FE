@@ -10,6 +10,7 @@ import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
 import VerdictShareCard from "@/components/widgets/trials/VerdictShareCard";
+import UserAvatar from "@/components/common/UserAvatar";
 import {
   fetchTrial,
   publishTrial,
@@ -158,6 +159,16 @@ function VerdictView() {
   return (
     <Layout allowScroll headerProps={{ subtitle: "판례 공유" }}>
       <section className="flex flex-col items-center gap-5 px-5 pb-8 pt-6">
+        {/* 타인이 보는 공개본 — 작성자 표시 */}
+        {trial.isPublicView && trial.authorNickname && (
+          <p className="flex items-center gap-2 self-start font-round text-[13px] text-jj-muted">
+            <UserAvatar src={trial.authorAvatarUrl} alt="" size="sm" />
+            <span>
+              <b className="font-display text-jj-ink">{trial.authorNickname}</b>님의 판례
+            </span>
+          </p>
+        )}
+
         {/* 공유 카드 프리뷰 (= 저장될 이미지) */}
         <VerdictShareCard ref={cardRef} trial={trial} />
 
@@ -197,8 +208,8 @@ function VerdictView() {
               <div className="font-display text-[14px] text-jj-ink">커뮤니티 피드에 공개</div>
               <div className="mt-0.5 font-round text-[11px] leading-snug text-jj-muted">
                 {trial.isPublic
-                  ? "다른 사람들이 익명 요약본으로 볼 수 있어요"
-                  : "공개하면 익명 요약본으로 피드에 올라가요"}
+                  ? "다른 사람들이 닉네임과 함께 볼 수 있어요"
+                  : "공개하면 닉네임과 함께 피드에 올라가요"}
               </div>
             </div>
             <button
