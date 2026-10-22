@@ -10,7 +10,8 @@ import BrutalButton from "@/components/common/BrutalButton";
 import { Textarea } from "@/components/ui/textarea";
 import VerdictChip from "@/components/widgets/trials/VerdictChip";
 import JuryGaugeBar from "@/components/widgets/trials/JuryGaugeBar";
-import ChatBubble from "@/components/widgets/trials/ChatBubble";
+import ChatBubble from "@/components/widgets/trials/ChatBubble"
+import DefenseTimeline from "@/components/widgets/trials/DefenseTimeline";
 import ProductThumb from "@/components/common/ProductThumb";
 import JurorAvatar from "@/components/common/JurorAvatar";
 import CharacterImage from "@/components/common/CharacterImage";
@@ -176,15 +177,7 @@ export default function DefenseChat({ trial, onUpdate, onExit }) {
             <CharacterImage name="팩트봇" className="inline-block h-4 w-4 align-text-bottom" />는 새로운 정보에 움직여요.
           </div>
 
-          {messages.map((m) => (
-            <ChatBubble
-              key={m.id}
-              role={m.role}
-              juror={m.juror}
-              emoji={m.emoji}
-              content={m.content}
-            />
-          ))}
+          <DefenseTimeline trial={trial} messages={messages} />
 
           {/* 전송 중: 낙관적 유저 말풍선 + 심리 인디케이터 */}
           {sending && (

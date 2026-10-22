@@ -9,6 +9,7 @@ import Layout from '@/components/common/Layout'
 import BrutalButton from '@/components/common/BrutalButton'
 import { Textarea } from '@/components/ui/textarea'
 import ChatBubble from '@/components/widgets/trials/ChatBubble'
+import DefenseTimeline from '@/components/widgets/trials/DefenseTimeline'
 import { submitDefense } from '@/stores/trialsSlice'
 import { cn } from '@/lib/utils'
 
@@ -116,15 +117,7 @@ export default function VersusDefenseChat({ trial, onUpdate, onExit }) {
             저울질해요. 편들 필요 없어요.
           </div>
 
-          {messages.map((m) => (
-            <ChatBubble
-              key={m.id}
-              role={m.role}
-              juror={m.juror}
-              emoji={m.emoji}
-              content={m.content}
-            />
-          ))}
+          <DefenseTimeline trial={trial} messages={messages} />
 
           {sending && (
             <>
