@@ -9,7 +9,7 @@ import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
 import StatBar from "@/components/common/StatBar";
-import EmojiThumb from "@/components/common/EmojiThumb";
+import ProductThumb from "@/components/common/ProductThumb";
 import TrialListItem from "@/components/widgets/trials/TrialListItem";
 import {
   fetchMyTrials,
@@ -19,7 +19,7 @@ import {
 } from "@/stores/trialsSlice";
 import { selectors } from "@/stores";
 import { useAuth } from "@/contexts/AuthContext";
-import { guessEmoji, formatWon } from "@/lib/trial";
+import { formatWon } from "@/lib/trial";
 import { cn } from "@/lib/utils";
 
 // 판결났고, 재질문 시점이 지났고, 아직 응답 안 한 사건
@@ -250,7 +250,7 @@ function FollowUpCard({ trial, onAnswer }) {
   return (
     <BrutalCard shadow="none" className="rounded-[14px] border-2 p-3">
       <div className="flex items-center gap-2.5">
-        <EmojiThumb size="sm">{guessEmoji(trial.itemName)}</EmojiThumb>
+        <ProductThumb imageUrl={trial.imageUrl || trial.imageUrlB} name={trial.itemName} size="sm" />
         <p className="min-w-0 flex-1 truncate font-display text-sm">
           {trial.itemName}
         </p>
