@@ -6,7 +6,7 @@ import { RotateCw } from 'lucide-react'
 
 import Layout from '@/components/common/Layout'
 import BrutalButton from '@/components/common/BrutalButton'
-import { createApiClient } from '@/lib/api'
+import { createApiClient, HEALTH_TIMEOUT_MS } from '@/lib/api'
 
 export default function ServerErrorPage() {
   const router = useRouter()
@@ -16,7 +16,7 @@ export default function ServerErrorPage() {
     if (retrying) return
     setRetrying(true)
     try {
-      await createApiClient().get('/health', { timeout: 5000 })
+      await createApiClient().get('/health', { timeout: HEALTH_TIMEOUT_MS })
       router.replace('/')
     } catch {
       setRetrying(false)
