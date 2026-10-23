@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 import ProductThumb from "@/components/common/ProductThumb";
 import JurorAvatar from "@/components/common/JurorAvatar";
 import VerdictChip from "@/components/widgets/trials/VerdictChip";
-import { formatWon, tally } from "@/lib/trial";
+import { formatWon, tally, juryWithOpinions, regretLabel } from "@/lib/trial";
 import { cn } from "@/lib/utils";
 
 const GRAD = {
@@ -127,9 +127,9 @@ function JuryList({ title, jury, versus }) {
                   <VerdictChip verdict={j.vote} className="px-1.5 py-0 text-[9px]" />
                 )}
               </div>
-              {j.argument && (
+              {j.opinion && (
                 <p className="mt-0.5 line-clamp-2 font-round text-[10.5px] leading-relaxed text-jj-ink/75">
-                  {j.argument}
+                  {j.opinion}
                 </p>
               )}
             </div>
@@ -142,7 +142,7 @@ function JuryList({ title, jury, versus }) {
 
 function SingleBody({ trial }) {
   const guilty = trial.verdict === "GUILTY";
-  const jury = Array.isArray(trial.jury) ? trial.jury : [];
+  const jury = juryWithOpinions(trial);
   const t = tally(jury, trial.verdict);
   return (
     <>
@@ -167,7 +167,11 @@ function SingleBody({ trial }) {
 
       {/* 스탯 */}
       <div className="mx-4 mb-3 mt-2 flex gap-2">
-        <StatTile label="예상 후회" value={`${trial.regretIndex}%`} tone="text-jj-red" />
+        <StatTile
+          label={regretLabel(trial) ? `예상 후회 · ${regretLabel(trial)}` : "예상 후회"}
+          value={`${trial.regretIndex}%`}
+          tone="text-jj-red"
+        />
         <StatTile
           label={guilty ? "아낀 돈" : "쓴 돈"}
           value={formatWon(trial.price)}
@@ -186,7 +190,7 @@ function VersusBody({ trial }) {
   const aWin = result === "A";
   const bWin = result === "B";
   const neither = result === "NEITHER";
-  const jury = Array.isArray(trial.jury) ? trial.jury : [];
+  const jury = juryWithOpinions(trial);
 
   return (
     <>

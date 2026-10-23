@@ -106,10 +106,12 @@ export const submitDefense = createAsyncThunk(
   "trials/submitDefense",
   async ({ id, message, target }, { rejectWithValue }) => {
     try {
-      const response = await createApiClient().post(`/trials/${id}/defense`, {
-        message,
-        ...(target ? { target } : {}),
-      });
+      // 마지막 라운드는 최종 판결문까지 생성(AI 2회 호출)해 기본 30초보다 오래 걸릴 수 있음
+      const response = await createApiClient().post(
+        `/trials/${id}/defense`,
+        { message, ...(target ? { target } : {}) },
+        { timeout: 60000 },
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(handleApiError(error));

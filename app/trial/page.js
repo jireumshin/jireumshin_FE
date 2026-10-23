@@ -16,7 +16,15 @@ import VersusResult from "@/components/widgets/trials/VersusResult";
 import { useAuth } from "@/contexts/AuthContext";
 import { selectors } from "@/stores";
 import { fetchTrial, requestVerdict, claimTrial } from "@/stores/trialsSlice";
-import { formatWon, tally, defenseInfo, JUROR_NAMES } from "@/lib/trial";
+import {
+  formatWon,
+  tally,
+  defenseInfo,
+  JUROR_NAMES,
+  juryWithOpinions,
+  opinionLabel,
+  regretLabel,
+} from "@/lib/trial";
 
 
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -168,7 +176,7 @@ function TrialResult() {
   }
 
   const guilty = trial.verdict === "GUILTY";
-  const jury = Array.isArray(trial.jury) ? trial.jury : [];
+  const jury = juryWithOpinions(trial);
   const t = tally(jury, trial.verdict);
   const saved = guilty ? formatWon(trial.price) : "0원";
   // 전역 claim이 store(current)를 갱신하면 CTA가 사라지도록 store 기준도 함께 본다
@@ -277,9 +285,12 @@ function TrialResult() {
                       verdict={j.vote}
                       className="px-1.5 py-0 text-[9px]"
                     />
+                    {opinionLabel(j) && (
+                      <span className="font-round text-[9.5px] text-jj-muted">{opinionLabel(j)}</span>
+                    )}
                   </div>
                   <p className="mt-0.5 font-round text-[11px] leading-relaxed text-jj-ink/80">
-                    {j.argument}
+                    {j.opinion}
                   </p>
                 </div>
               </li>
@@ -300,6 +311,7 @@ function TrialResult() {
           <BrutalCard shadow="sm" className="p-3.5 text-center">
             <div className="font-round text-[11px] text-jj-muted">
               예상 후회지수
+              {regretLabel(trial) && ` · ${regretLabel(trial)}`}
             </div>
             <div className="mt-1 font-display text-3xl text-jj-red">
               {trial.regretIndex}%

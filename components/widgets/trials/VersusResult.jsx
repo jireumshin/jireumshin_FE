@@ -15,7 +15,7 @@ import VersusDefenseChat from '@/components/widgets/trials/VersusDefenseChat'
 import { useAuth } from '@/contexts/AuthContext'
 import { selectors } from '@/stores'
 import { claimTrial } from '@/stores/trialsSlice'
-import { formatWon } from '@/lib/trial'
+import { formatWon, juryWithOpinions, opinionLabel, regretLabel } from '@/lib/trial'
 import { cn } from '@/lib/utils'
 
 const weight = (jurors, key) =>
@@ -41,7 +41,7 @@ export default function VersusResult({ trial, onUpdate }) {
     )
   }
 
-  const jurors = Array.isArray(trial.jury) ? trial.jury : []
+  const jurors = juryWithOpinions(trial)
   const wA = weight(jurors, 'scoreA')
   const wB = weight(jurors, 'scoreB')
   const result = trial.versusResult // 'A' | 'B' | 'NEITHER'
@@ -147,8 +147,11 @@ export default function VersusResult({ trial, onUpdate }) {
                       A <b className={j.scoreA >= j.scoreB ? 'text-jj-green' : 'text-jj-ink'}>{j.scoreA}</b>
                       {' · '}B <b className={j.scoreB > j.scoreA ? 'text-jj-green' : 'text-jj-ink'}>{j.scoreB}</b>
                     </span>
+                    {opinionLabel(j) && (
+                      <span className="font-round text-[9.5px] text-jj-muted">{opinionLabel(j)}</span>
+                    )}
                   </div>
-                  <p className="mt-0.5 font-round text-[11px] leading-relaxed text-jj-ink/80">{j.argument}</p>
+                  <p className="mt-0.5 font-round text-[11px] leading-relaxed text-jj-ink/80">{j.opinion}</p>
                 </div>
               </li>
             ))}
@@ -163,7 +166,9 @@ export default function VersusResult({ trial, onUpdate }) {
 
         {/* 후회지수 */}
         <BrutalCard shadow="sm" className="p-3.5 text-center">
-          <div className="font-round text-[11px] text-jj-muted">예상 후회지수</div>
+          <div className="font-round text-[11px] text-jj-muted">
+            예상 후회지수{regretLabel(trial) && ` · ${regretLabel(trial)}`}
+          </div>
           <div className="mt-1 font-display text-3xl text-jj-red">{trial.regretIndex}%</div>
         </BrutalCard>
 
