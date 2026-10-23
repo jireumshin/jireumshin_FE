@@ -98,26 +98,28 @@ export const createData = createAsyncThunk(
 
 ### 레이아웃(모바일 전용)
 - 화면 셸은 `components/common/Layout.jsx` 사용 — 데스크탑에서도 **468px 중앙 프레임**으로 렌더링
-- 도트 배경은 `body`(globals.css), Layout은 좌우 잉크 보더 프레임 담당
-- props: `showHeader`, `headerProps`, `showBottomNavigation`, `bottomNavigation`, `allowScroll`, `noScroll`, `isLoading`
-- 헤더는 `components/common/Header.jsx` (옐로우 바 + 판결봉). `subtitle`, `right` 슬롯 지원
+- 바깥 배경은 `body`(`jj-bg`), Layout은 `jj-app` 프레임 + 좌우 `jj-line` 보더 담당
+- props: `showHeader`, `headerProps`, `showBottomNavigation`, `bottomNavigation`, `activeTab`(하단 탭바), `allowScroll`, `noScroll`, `isLoading`
+- 헤더는 `components/common/Header.jsx` (흰 바 + 로고). `subtitle`, `right` 슬롯 지원
 
 ### 디자인 시스템 (지름신 재판소)
 > **단일 소스: `docs/designsystem.md`** — 색·폰트·컴포넌트 규칙이 바뀌면 코드와 함께 그 문서를 업데이트. 아래는 요약.
 
-컨셉: **네오브루탈리즘 팝 법정** — 두꺼운 잉크 보더 + 하드 오프셋 그림자(블러 없음).
+컨셉: **소프트 팝 법정 — 네이비 + 라벤더 + 화이트**. 흰 카드 + 얇은 라벤더그레이 보더 + 부드러운 그림자, 배심원 캐릭터 PNG가 포인트.
 
 - **shadcn/ui를 기본으로 쓰되, 서비스 톤으로 래핑**해서 사용 (예: `components/common/BrutalButton.jsx`).
-  shadcn 컴포넌트는 내부 `cn()` 병합이라 className으로 브랜드 스타일을 덮어쓸 수 있음.
+  shadcn 컴포넌트는 내부 `cn()` 병합이라 className으로 브랜드 스타일을 덮어쓸 수 있음. (`Brutal*` 이름은 초기 디자인의 흔적)
 - **브랜드 색 토큰** (globals.css `@theme`, `bg-jj-*`/`text-jj-*`/`border-jj-*`로 사용):
-  - `jj-red` 검사·유죄·사지마 / `jj-green` 변호·무죄·사도됨 / `jj-violet` 중립(팩트봇)·포인트
-  - `jj-yellow` 브랜드·헤더·강조 / `jj-ink` 잉크(텍스트·보더) / `jj-app` 앱배경 / `jj-paper` 카드
-  - shadcn 시맨틱 변수(`--primary` 등)도 이 팔레트로 리컬러됨 → 기본 컴포넌트도 자동 온브랜드
-- **그림자**: `shadow-hard`(4px) / `shadow-hard-sm`(3px). **보더**: `border-[2.5px] border-jj-ink`.
+  - `jj-navy` 주요 CTA / `jj-ink` 텍스트 / `jj-muted` 보조 텍스트 / `jj-line` 보더·구분선 / `jj-app` 앱배경 / `jj-paper` 카드
+  - `jj-red` 유죄·사지마 / `jj-green` 무죄·사도됨 / `jj-violet` 라벤더 포인트 / `jj-yellow` 소품 강조(보조)
+  - 캐릭터 accent(포인트 전용): `jj-value` 가성비요정 / `jj-wallet` 텅장지킴이 / `jj-impulse` 지름요정 / `jj-fact` 팩트봇 (+`-soft`)
+  - shadcn 시맨틱 변수(`--primary`=navy 등)도 이 팔레트로 리컬러됨 → 기본 컴포넌트도 자동 온브랜드
+- **그림자**: `shadow-hard` / `shadow-hard-sm` (이름과 달리 부드러운 네이비 블러 그림자). **보더**: `border border-jj-line`. **라운드**: 카드·버튼 `rounded-2xl`.
 - **폰트**: `font-display`(Black Han Sans·제목) / 기본 본문 Gothic A1 / `font-round`(Jua·캡션). globals.css에서 Google Fonts로 로드.
-- **눌림 인터랙션**: 버튼 `active:translate-x-1 active:translate-y-1 active:shadow-none`.
+- **인터랙션**: 버튼 `hover:scale-[1.02]` / `active:scale-[.98]`.
+- **배심원 표현**: 이모지 대신 캐릭터 PNG (`JurorAvatar`, `CharacterImage`).
 - ⚠️ Tailwind는 **완전한 클래스 문자열만 스캔**함 — `bg-${x}` 동적 조합 금지, 전체 문자열(`bg-jj-red`)로 작성.
-- UI 레퍼런스: `docs/ui_example/*.html` (화면별 목업).
+- `docs/ui_example/*.html`은 **초기(네오브루탈) 목업** — 화면 구성 참고용, 스타일은 따르지 말 것.
 
 ### 인증 및 라우트 보호
 - 인증이 필요한 페이지는 `useAuth()` 훅의 `requireAuth()` 사용
