@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, MessagesSquare } from "lucide-react";
+import { Heart, MessageCircle, MessagesSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatWon } from "@/lib/trial";
 import ProductThumb from "@/components/common/ProductThumb";
@@ -71,23 +71,34 @@ export default function FeedCard({ trial, onOpen, onLike, likeBusy }) {
             {trial.authorNickname ?? "익명"}
           </span>
         </span>
-        <button
-          type="button"
-          onClick={onLike}
-          disabled={likeBusy}
-          aria-pressed={liked}
-          className={cn(
-            "flex items-center gap-1.5 rounded-full border border-jj-line px-3 py-1 font-round text-[12px] shadow-hard-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50",
-            liked ? "bg-jj-red text-white" : "bg-jj-paper",
+        <span className="flex flex-none items-center gap-2">
+          {trial.commentCount > 0 && (
+            <span
+              aria-label={`댓글 ${trial.commentCount}개`}
+              className="flex items-center gap-1 font-round text-[12px] text-jj-muted"
+            >
+              <MessageCircle className="h-3.5 w-3.5" strokeWidth={2.5} />
+              {trial.commentCount}
+            </span>
           )}
-        >
-          <Heart
-            className="h-3.5 w-3.5"
-            strokeWidth={2.5}
-            fill={liked ? "currentColor" : "none"}
-          />
-          {trial.likeCount > 0 ? trial.likeCount : "공감"}
-        </button>
+          <button
+            type="button"
+            onClick={onLike}
+            disabled={likeBusy}
+            aria-pressed={liked}
+            className={cn(
+              "flex items-center gap-1.5 rounded-full border border-jj-line px-3 py-1 font-round text-[12px] shadow-hard-sm transition-transform hover:scale-105 active:scale-95 disabled:opacity-50",
+              liked ? "bg-jj-red text-white" : "bg-jj-paper",
+            )}
+          >
+            <Heart
+              className="h-3.5 w-3.5"
+              strokeWidth={2.5}
+              fill={liked ? "currentColor" : "none"}
+            />
+            {trial.likeCount > 0 ? trial.likeCount : "공감"}
+          </button>
+        </span>
       </div>
     </BrutalCard>
   );

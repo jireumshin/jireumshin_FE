@@ -188,6 +188,45 @@ export const setMessageHidden = createAsyncThunk(
   },
 );
 
+// 공개 판례 댓글 — 목록은 화면 로컬 상태로 관리 (전역 불필요)
+export const fetchComments = createAsyncThunk(
+  "trials/fetchComments",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().get(`/trials/${id}/comments`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
+export const createComment = createAsyncThunk(
+  "trials/createComment",
+  async ({ id, content }, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().post(`/trials/${id}/comments`, {
+        content,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
+export const deleteComment = createAsyncThunk(
+  "trials/deleteComment",
+  async ({ id, commentId }, { rejectWithValue }) => {
+    try {
+      await createApiClient().delete(`/trials/${id}/comments/${commentId}`);
+      return commentId;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
 const initialState = {
   creating: false,
   error: null,

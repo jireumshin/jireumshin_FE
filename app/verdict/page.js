@@ -11,6 +11,7 @@ import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
 import VerdictShareCard from "@/components/widgets/trials/VerdictShareCard";
 import DefenseTimeline from "@/components/widgets/trials/DefenseTimeline";
+import CommentSection from "@/components/widgets/trials/CommentSection";
 import PublishPreviewDialog from "@/components/dialog/trials/PublishPreviewDialog";
 import UserAvatar from "@/components/common/UserAvatar";
 import {
@@ -291,6 +292,8 @@ function VerdictView() {
             </BrutalCard>
           </section>
         )}
+
+        {trial.isPublic && <CommentSection trialId={trial.id} />}
 
         {/* 자연 유입 CTA */}
         <BrutalButton
