@@ -59,7 +59,12 @@ export default function SignupPage() {
     <Layout headerProps={{ subtitle: "회원가입", right: closeBtn }}>
       <form onSubmit={onSubmit} className="flex flex-col gap-5 px-5 pb-8 pt-8">
         <header className="text-center">
-          <span className="text-4xl">✍️</span>
+          <img
+            src="/assets/impluse-fairy.png"
+            alt=""
+            draggable={false}
+            className="mx-auto block h-16 w-16 object-contain"
+          />
           <h1 className="mt-3 font-display text-2xl leading-tight">
             재판소 등록
           </h1>

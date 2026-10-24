@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart } from "lucide-react";
+import { Heart, MessagesSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatWon } from "@/lib/trial";
 import ProductThumb from "@/components/common/ProductThumb";
@@ -54,6 +54,13 @@ export default function FeedCard({ trial, onOpen, onLike, likeBusy }) {
           <p className="line-clamp-2 font-round text-[12px] leading-snug text-jj-ink">
             {trial.summary}
           </p>
+        )}
+
+        {trial.defenseRounds > 0 && (
+          <span className="inline-flex items-center gap-1 self-start rounded-full bg-jj-violet-soft px-2.5 py-0.5 font-round text-[11px] text-jj-violet">
+            <MessagesSquare className="h-3 w-3" strokeWidth={2.5} />
+            변론 {trial.defenseRounds}라운드
+          </span>
         )}
       </button>
 

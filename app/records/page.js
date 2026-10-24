@@ -11,11 +11,14 @@ import BrutalCard from "@/components/common/BrutalCard";
 import StatBar from "@/components/common/StatBar";
 import ProductThumb from "@/components/common/ProductThumb";
 import TrialListItem from "@/components/widgets/trials/TrialListItem";
+import PublishPreviewDialog from "@/components/dialog/trials/PublishPreviewDialog";
 import {
   fetchMyTrials,
+  fetchTrial,
   submitFollowUp,
   publishTrial,
   unpublishTrial,
+  setMessageHidden,
 } from "@/stores/trialsSlice";
 import { selectors } from "@/stores";
 import { useAuth } from "@/contexts/AuthContext";
@@ -57,6 +60,7 @@ export default function RecordsPage() {
   const trials = useSelector(selectors.getMyTrials);
   const loading = useSelector(selectors.getMyTrialsLoading);
   const [pubBusyId, setPubBusyId] = useState(null);
+  const [preview, setPreview] = useState(null); // 공개 전 미리보기 중인 판례(대화 포함)
 
   useEffect(() => {
     if (initialized && !user) router.replace("/login");
@@ -90,6 +94,12 @@ export default function RecordsPage() {
       if (t.isPublic) {
         await dispatch(unpublishTrial(t.id)).unwrap();
         toast("피드에서 내렸어요");
+        return;
+      }
+      // 목록엔 대화가 없어서 상세를 받아 변론이 있으면 미리보기부터
+      const full = await dispatch(fetchTrial(t.id)).unwrap();
+      if (full.messages?.length) {
+        setPreview(full);
       } else {
         await dispatch(publishTrial(t.id)).unwrap();
         toast("🌐 피드에 공개했어요");
@@ -98,6 +108,30 @@ export default function RecordsPage() {
       toast.error(typeof e === "string" ? e : "변경에 실패했어요");
     } finally {
       setPubBusyId(null);
+    }
+  };
+
+  const confirmPublish = async () => {
+    setPubBusyId(preview.id);
+    try {
+      await dispatch(publishTrial(preview.id)).unwrap();
+      setPreview(null);
+      toast("🌐 피드에 공개했어요");
+    } catch (e) {
+      toast.error(typeof e === "string" ? e : "공개에 실패했어요");
+    } finally {
+      setPubBusyId(null);
+    }
+  };
+
+  const onToggleHidden = async (m) => {
+    try {
+      const t = await dispatch(
+        setMessageHidden({ id: preview.id, messageId: m.id, hidden: !m.hidden }),
+      ).unwrap();
+      setPreview(t);
+    } catch (e) {
+      toast.error(typeof e === "string" ? e : "변경에 실패했어요");
     }
   };
 
@@ -196,6 +230,14 @@ export default function RecordsPage() {
           </>
         )}
       </section>
+      <PublishPreviewDialog
+        open={!!preview}
+        onOpenChange={(open) => !open && setPreview(null)}
+        trial={preview}
+        onToggleHidden={onToggleHidden}
+        onConfirm={confirmPublish}
+        busy={!!pubBusyId}
+      />
     </Layout>
   );
 }

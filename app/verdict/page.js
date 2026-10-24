@@ -10,12 +10,15 @@ import Layout from "@/components/common/Layout";
 import BrutalButton from "@/components/common/BrutalButton";
 import BrutalCard from "@/components/common/BrutalCard";
 import VerdictShareCard from "@/components/widgets/trials/VerdictShareCard";
+import DefenseTimeline from "@/components/widgets/trials/DefenseTimeline";
+import PublishPreviewDialog from "@/components/dialog/trials/PublishPreviewDialog";
 import UserAvatar from "@/components/common/UserAvatar";
 import {
   fetchTrial,
   publishTrial,
   unpublishTrial,
   claimTrial,
+  setMessageHidden,
 } from "@/stores/trialsSlice";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
@@ -31,6 +34,7 @@ function VerdictView() {
   const [trial, setTrial] = useState(null);
   const [saving, setSaving] = useState(false);
   const [pubBusy, setPubBusy] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -101,6 +105,7 @@ function VerdictView() {
   };
 
   // 커뮤니티 피드 공개/비공개 (공개는 로그인 필요 — 익명은 로그인 유도)
+  // 변론 대화가 있으면 공개 전에 미리보기에서 숨길 진술을 고르게 함
   const onTogglePublish = async () => {
     if (!requireAuth()) return; // 비로그인 → 로그인 페이지로
     if (pubBusy) return;
@@ -111,6 +116,8 @@ function VerdictView() {
       if (t.isPublic) {
         t = await dispatch(unpublishTrial(t.id)).unwrap();
         toast("피드에서 내렸어요");
+      } else if (t.messages?.length) {
+        setPreviewOpen(true);
       } else {
         t = await dispatch(publishTrial(t.id)).unwrap();
         toast("🌐 커뮤니티 피드에 공개했어요");
@@ -123,6 +130,30 @@ function VerdictView() {
     }
   };
 
+  const confirmPublish = async () => {
+    setPubBusy(true);
+    try {
+      setTrial(await dispatch(publishTrial(trial.id)).unwrap());
+      setPreviewOpen(false);
+      toast("🌐 커뮤니티 피드에 공개했어요");
+    } catch (e) {
+      toast.error(typeof e === "string" ? e : "공개에 실패했어요");
+    } finally {
+      setPubBusy(false);
+    }
+  };
+
+  const onToggleHidden = async (m) => {
+    try {
+      const t = await dispatch(
+        setMessageHidden({ id: trial.id, messageId: m.id, hidden: !m.hidden }),
+      ).unwrap();
+      setTrial(t);
+    } catch (e) {
+      toast.error(typeof e === "string" ? e : "변경에 실패했어요");
+    }
+  };
+
   if (phase === "loading") {
     return <Layout isLoading headerProps={{ subtitle: "판례 조회 중" }} />;
   }
@@ -131,7 +162,12 @@ function VerdictView() {
     return (
       <Layout headerProps={{ subtitle: "재판소" }}>
         <div className="flex flex-col items-center gap-4 px-6 py-24 text-center">
-          <span className="text-5xl">🧑‍⚖️</span>
+          <img
+            src="/assets/judge.png"
+            alt=""
+            draggable={false}
+            className="h-28 w-28 object-contain"
+          />
           <p className="font-display text-lg">판례를 찾을 수 없어요</p>
           <BrutalButton tone="ink" onClick={() => router.replace("/")}>
             나도 재판받아보기
@@ -145,7 +181,12 @@ function VerdictView() {
     return (
       <Layout headerProps={{ subtitle: "재판소" }}>
         <div className="flex flex-col items-center gap-4 px-6 py-24 text-center">
-          <span className="text-5xl">⏳</span>
+          <img
+            src="/assets/judge.png"
+            alt=""
+            draggable={false}
+            className="h-28 w-28 object-contain"
+          />
           <p className="font-display text-lg">아직 판결 전인 사건이에요</p>
           <BrutalButton tone="ink" onClick={() => router.replace("/")}>
             나도 재판받아보기
@@ -156,6 +197,7 @@ function VerdictView() {
   }
 
   // phase === "ready"
+  const canHide = !trial.isPublicView && !!trial.userId; // 소유된 판례의 주인 뷰
   return (
     <Layout allowScroll headerProps={{ subtitle: "판례 공유" }}>
       <section className="flex flex-col items-center gap-5 px-5 pb-8 pt-6">
@@ -208,8 +250,8 @@ function VerdictView() {
               <div className="font-display text-[14px] text-jj-ink">커뮤니티 피드에 공개</div>
               <div className="mt-0.5 font-round text-[11px] leading-snug text-jj-muted">
                 {trial.isPublic
-                  ? "다른 사람들이 닉네임과 함께 볼 수 있어요"
-                  : "공개하면 닉네임과 함께 피드에 올라가요"}
+                  ? "다른 사람들이 닉네임·변론 대화와 함께 볼 수 있어요"
+                  : "공개하면 닉네임·변론 대화와 함께 피드에 올라가요"}
               </div>
             </div>
             <button
@@ -227,6 +269,29 @@ function VerdictView() {
           </BrutalCard>
         )}
 
+        {/* 변론 기록 — 공개본엔 주인이 숨긴 진술이 가려져 내려옴. 주인은 진술별 숨김 토글 */}
+        {trial.messages?.length > 0 && (
+          <section aria-labelledby="defense-log" className="flex w-full flex-col gap-2.5">
+            <header>
+              <h2 id="defense-log" className="font-display text-[15px] text-jj-ink">
+                변론 기록 · {trial.defenseRounds}라운드
+              </h2>
+              {canHide && (
+                <p className="mt-0.5 font-round text-[11px] text-jj-muted">
+                  눈 아이콘으로 공개본에서 숨길 진술을 고를 수 있어요
+                </p>
+              )}
+            </header>
+            <BrutalCard shadow="sm" className="flex flex-col gap-2.5 bg-jj-app p-3.5">
+              <DefenseTimeline
+                trial={trial}
+                messages={trial.messages}
+                onToggleHidden={canHide ? onToggleHidden : undefined}
+              />
+            </BrutalCard>
+          </section>
+        )}
+
         {/* 자연 유입 CTA */}
         <BrutalButton
           tone="ink"
@@ -239,6 +304,15 @@ function VerdictView() {
           </span>
         </BrutalButton>
       </section>
+
+      <PublishPreviewDialog
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+        trial={trial}
+        onToggleHidden={onToggleHidden}
+        onConfirm={confirmPublish}
+        busy={pubBusy}
+      />
     </Layout>
   );
 }

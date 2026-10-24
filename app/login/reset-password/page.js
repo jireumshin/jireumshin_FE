@@ -41,7 +41,12 @@ function ResetPasswordForm() {
   if (token === "") {
     return (
       <section className="flex min-h-full flex-col justify-center gap-5 px-5 py-8 text-center">
-        <span className="text-4xl">🚫</span>
+        <img
+          src="/assets/fact-bot.png"
+          alt=""
+          draggable={false}
+          className="mx-auto block h-16 w-16 object-contain"
+        />
         <h1 className="font-display text-2xl leading-tight">
           유효하지 않은 링크예요
         </h1>
@@ -65,7 +70,12 @@ function ResetPasswordForm() {
       className="flex min-h-full flex-col justify-center gap-5 px-5 py-8"
     >
       <header className="text-center">
-        <span className="text-4xl">🔓</span>
+        <img
+          src="/assets/wallet-guardian.png"
+          alt=""
+          draggable={false}
+          className="mx-auto block h-16 w-16 object-contain"
+        />
         <h1 className="mt-3 font-display text-2xl leading-tight">
           새 비밀번호 설정
         </h1>

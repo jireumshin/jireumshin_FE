@@ -15,7 +15,8 @@ function RoundDivider({ children }) {
 }
 
 // 변론 대화 흐름 — 0라운드(1심 의견) + 라운드별 구분선 + 메시지(게이지 변화 포함)
-export default function DefenseTimeline({ trial, messages }) {
+// onToggleHidden(message)을 주면 판례 주인이 진술마다 공개본 숨김을 토글할 수 있음
+export default function DefenseTimeline({ trial, messages, onToggleHidden }) {
   const jury = Array.isArray(trial.jury) ? trial.jury : [];
 
   return (
@@ -49,6 +50,8 @@ export default function DefenseTimeline({ trial, messages }) {
             gaugeDelta={m.gaugeDelta}
             gaugeB={m.gaugeB}
             gaugeDeltaB={m.gaugeDeltaB}
+            hidden={m.hidden}
+            onToggleHidden={onToggleHidden && (() => onToggleHidden(m))}
           />
         </Fragment>
       ))}

@@ -172,6 +172,22 @@ export const unpublishTrial = createAsyncThunk(
   },
 );
 
+// 공개본에서 변론 진술 숨기기/보이기 (본인 판례) — 갱신된 사건 반환
+export const setMessageHidden = createAsyncThunk(
+  "trials/setMessageHidden",
+  async ({ id, messageId, hidden }, { rejectWithValue }) => {
+    try {
+      const response = await createApiClient().patch(
+        `/trials/${id}/messages/${messageId}`,
+        { hidden },
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(handleApiError(error));
+    }
+  },
+);
+
 const initialState = {
   creating: false,
   error: null,
@@ -261,6 +277,10 @@ const trialsSlice = createSlice({
       .addCase(unpublishTrial.fulfilled, (state, action) => {
         const updated = action.payload;
         state.mine = state.mine.map((t) => (t.id === updated.id ? updated : t));
+        if (state.current?.id === updated.id) state.current = updated;
+      })
+      .addCase(setMessageHidden.fulfilled, (state, action) => {
+        const updated = action.payload;
         if (state.current?.id === updated.id) state.current = updated;
       });
   },

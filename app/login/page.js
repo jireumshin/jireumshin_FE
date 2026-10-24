@@ -102,7 +102,12 @@ export default function LoginPage() {
       </Suspense>
       <section className="flex flex-col gap-5 px-5 pb-8 pt-7">
         <header className="text-center">
-          <span className="text-4xl">{hasRecords ? '🗂️' : '⚖️'}</span>
+          <img
+            src="/assets/judge.png"
+            alt=""
+            draggable={false}
+            className="mx-auto block h-16 w-16 object-contain"
+          />
           <h1 className="mt-3 font-display text-2xl leading-tight">
             {hasRecords ? '지금까지의 재판 기록,' : '내 판례를 안전하게'}
             <br />

@@ -102,7 +102,12 @@ function TrialResult() {
     return (
       <Layout headerProps={{ subtitle: "재판소" }}>
         <div className="flex flex-col items-center gap-4 px-6 py-24 text-center">
-          <span className="text-5xl">🧑‍⚖️</span>
+          <img
+            src="/assets/judge.png"
+            alt=""
+            draggable={false}
+            className="h-28 w-28 object-contain"
+          />
           <p className="font-display text-lg">{errMsg}</p>
           <BrutalButton tone="ink" onClick={() => router.replace("/")}>
             홈으로 가기

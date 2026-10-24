@@ -48,7 +48,12 @@ export default function FindPwPage() {
           className="flex min-h-full flex-col justify-center gap-5 px-5 py-8"
         >
           <header className="text-center">
-            <span className="text-4xl">🔑</span>
+            <img
+              src="/assets/wallet-guardian.png"
+              alt=""
+              draggable={false}
+              className="mx-auto block h-16 w-16 object-contain"
+            />
             <h1 className="mt-3 font-display text-2xl leading-tight">
               비밀번호 재설정
             </h1>
@@ -93,7 +98,12 @@ export default function FindPwPage() {
       ) : (
         <section className="flex min-h-full flex-col justify-center gap-5 px-5 py-8">
           <header className="text-center">
-            <span className="text-4xl">📮</span>
+            <img
+              src="/assets/value-fairy.png"
+              alt=""
+              draggable={false}
+              className="mx-auto block h-16 w-16 object-contain"
+            />
             <h1 className="mt-3 font-display text-2xl leading-tight">
               메일을 보냈어요
             </h1>
